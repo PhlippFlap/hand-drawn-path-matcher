@@ -1,0 +1,34 @@
+.circleButton {
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+}
+
+.circleButton:hover {
+    opacity: 0.8;
+}
+
+.downloadIcon {
+    height: 50%;
+    margin-top: 7%;
+    margin-left: 2%;
+}
+
+.leftArrowIcon {
+    height: 60%;
+    margin-top: 7%;
+    margin-right: 7%;
+}
+
+.rightArrowIcon {
+    height: 60%;
+    margin-top: 7%;
+    margin-left: 7%;
+    transform: rotate(180deg);
+}
+
+.plusIcon {
+    height: 60%;
+    margin-top: 7%;
+}

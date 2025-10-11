@@ -1,0 +1,28 @@
+.header {
+    box-sizing: border-box;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    background-color: black;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    align-items: center;
+}
+
+.title {
+    width: fit-content;
+    font-size: large;
+}
+
+.switchBtnContainer {
+    width: 20%;
+}
+
+.downloadBtnContainer {
+    width: fit-content;
+}

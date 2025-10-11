@@ -1,0 +1,40 @@
+.switchButton {
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.2rem;
+    height: 2rem;
+    width: 100%;
+}
+
+.left {
+    width: 50%;
+    height: 2rem;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.right {
+    width: 50%;
+    height: 2rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+
+.leftActive {
+    color: white;
+    background-color: var(--editmode-primary-dark);
+}
+
+.rightActive {
+    color: white;
+    background-color: var(--trainmode-primary-dark);
+}
+
+.inactive {
+    color: white;
+    background-color: var(--gray-dark);;
+}
