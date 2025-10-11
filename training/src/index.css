@@ -18,6 +18,16 @@
   --trainmode-primary-dark: rgb(86, 0, 86);
   --gray: gray;
   --gray-dark: rgb(72, 72, 72);
+
+  --header-height: 3.5rem;
+}
+
+body {
+    margin: 0;
+}
+
+p {
+    margin: 0;
 }
 
 a {
@@ -40,5 +50,6 @@ button {
     border: none;
     cursor: pointer;
     transition: background-color 0.25s;
-    align-items:end;
+    padding: 0;
+    transition: opacity 0.1s ease-in-out;
 }

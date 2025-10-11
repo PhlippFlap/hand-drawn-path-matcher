@@ -13,7 +13,7 @@ function Header({mode, setMode}) {
     return (
         <div className="header">
             <div className="title">
-                Hand Drawn Path Matcher
+                <p>Hand Drawn Path Matcher</p>
             </div>
             {mode !== 'init' &&
                 <div className="switchBtnContainer">

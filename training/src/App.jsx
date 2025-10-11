@@ -9,12 +9,22 @@ import PlusButton from './components/buttons/PlusButton';
 import LeftArrowButton from './components/buttons/LeftArrowButton';
 import RightArrowButton from './components/buttons/RightArrowButton';
 import Header from './Header';
+import EditableButton from './components/buttons/EditableButton';
+import RoundButton from './components/buttons/RoundButton';
+import InitialPage from './main_pages/initial/InitialPage';
 
 function download() {
 }
 
 function App() {
     const [mode, setMode] = useState('init');
+    const [project, setProject] = useState(null);
+
+    const onProjectInput = (project) => {
+        setProject(project);
+        alert('Project loaded');
+        setMode('edit');
+    }
 
     const handleDownload = () => {
         setMode('download');
@@ -24,17 +34,18 @@ function App() {
         <>
             <Header mode={mode} setMode={setMode}/>
             {mode==='init' && 
-                <div>
-                    <img src={editIcon} style={{ height: "2rem" }} alt="edit icon" />
-                    <img src={downloadIcon} style={{ height: "2rem" }} alt="download icon" />
-                    <img src={plusIcon} style={{ height: "2rem" }} alt="plus icon" />
-                    <img src={arrowIcon} style={{ height: '2rem' }} alt="arrow icon" />
-                </div>
+                <InitialPage onProjectInput={onProjectInput} />
             }
             <DownloadButton onClick={handleDownload} />
             <PlusButton />
             <LeftArrowButton />
             <RightArrowButton />
+            <EditableButton onClick={() => alert('click')} onEdit={() => alert('edit')} backgroundColor={'var(--primary)'}>
+                test
+            </EditableButton>
+            <RoundButton onClick={() => alert('click')} backgroundColor='green'>
+                Test
+            </RoundButton>
         </>
     )
 }

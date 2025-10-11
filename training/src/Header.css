@@ -3,12 +3,11 @@
     left: 0;
     top: 0;
     width: 100%;
+    height: var(--header-height);
     display: flex;
     background-color: black;
     flex-direction: row;
     justify-content: space-between;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
     align-items: center;
@@ -17,6 +16,11 @@
 .title {
     width: fit-content;
     font-size: large;
+}
+
+.subtitle {
+    font-size: medium;
+    color: gray;
 }
 
 .switchBtnContainer {
