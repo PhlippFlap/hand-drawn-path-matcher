@@ -16,13 +16,15 @@ function Header({mode, setMode}) {
                 <p>Hand Drawn Path Matcher</p>
             </div>
             {mode !== 'init' &&
-                <div className="switchBtnContainer">
-                    <SwitchButton onToggle={handleToggle}/>
-                </div>
+                <>
+                    <div className="switchBtnContainer">
+                        <SwitchButton onToggle={handleToggle}/>
+                    </div>
+                    <div className="downloadBtnContainer">
+                        <DownloadButton />
+                    </div>
+                </>
             }
-            <div className="downloadBtnContainer">
-                <DownloadButton />
-            </div>
         </div>
     );
 }

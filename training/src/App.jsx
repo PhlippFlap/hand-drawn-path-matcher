@@ -1,9 +1,5 @@
 import { useState } from 'react'
 import './App.css'
-import editIcon from './assets/edit_icon.svg';
-import downloadIcon from './assets/download_icon.svg';
-import arrowIcon from './assets/arrow_icon.svg';
-import plusIcon from './assets/plus_icon.svg';
 import DownloadButton from './components/buttons/DownloadButton';
 import PlusButton from './components/buttons/PlusButton';
 import LeftArrowButton from './components/buttons/LeftArrowButton';
@@ -12,13 +8,16 @@ import Header from './Header';
 import EditableButton from './components/buttons/EditableButton';
 import RoundButton from './components/buttons/RoundButton';
 import InitialPage from './main_pages/initial/InitialPage';
+import PopupProvider, { usePopup } from './components/PopupProvider';
+import EditPathClassPopup from './popups/EditPathClassPopup';
 
 function download() {
 }
 
-function App() {
+function Content() {
     const [mode, setMode] = useState('init');
     const [project, setProject] = useState(null);
+    const { popup, setPopup } = usePopup();
 
     const onProjectInput = (project) => {
         setProject(project);
@@ -32,12 +31,15 @@ function App() {
 
     return (
         <>
+            {popup && 
+                popup
+            }
             <Header mode={mode} setMode={setMode}/>
             {mode==='init' && 
                 <InitialPage onProjectInput={onProjectInput} />
             }
             <DownloadButton onClick={handleDownload} />
-            <PlusButton />
+            <PlusButton onClick={() => setPopup(<EditPathClassPopup/>)} />
             <LeftArrowButton />
             <RightArrowButton />
             <EditableButton onClick={() => alert('click')} onEdit={() => alert('edit')} backgroundColor={'var(--primary)'}>
@@ -47,6 +49,14 @@ function App() {
                 Test
             </RoundButton>
         </>
+    );
+}
+
+function App() {
+    return (
+        <PopupProvider>
+            <Content />
+        </PopupProvider>
     )
 }
 
