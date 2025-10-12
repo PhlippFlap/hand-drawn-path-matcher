@@ -2,16 +2,49 @@
     position: fixed;
     display: flex;
     flex-direction: column;
+    row-gap: 3rem;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: start;
     padding: 2rem;
+    padding-left: 10%;
+    padding-right: 10%;
+    box-sizing: border-box;
     border-radius: 2rem;
     background-color: var(--gray-dark);
-    width: 50%;
-    height: 50%;
+    width: 60%;
+    height: fit-content;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+
+    .fieldContainer {
+        display: flex;
+        flex-direction: row;
+        column-gap: 4rem;
+        font-size: small;
+        align-items: center;
+        
+        .field {
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            flex-basis: 12rem;
+            align-items: start;
+
+            input[type=text], select {
+                width: 100%;
+                margin-top: 0.3rem;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 10px;
+            }
+        }
+
+        p {
+            font-size: small;
+            color: gray;
+        }
+    }
 
     .bottomButtons {
         display: flex;

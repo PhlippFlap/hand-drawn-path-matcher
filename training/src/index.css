@@ -12,6 +12,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   --primary: rgb(45, 83, 178);
+  --primary-light: rgb(69, 107, 203);
   --editmode-primary: green;
   --editmode-primary-dark: darkgreen;
   --trainmode-primary: purple;
