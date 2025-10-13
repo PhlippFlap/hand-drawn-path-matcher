@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export const useUiStore = create((set) => ({
-    mode: 'edit',
+    mode: 'init',
     chosenSequenceClass: null,
     chosenSequence: null,
 

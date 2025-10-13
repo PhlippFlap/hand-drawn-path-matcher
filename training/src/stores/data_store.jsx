@@ -3,15 +3,11 @@ import { create } from 'zustand';
 export class SequenceClass {
     name;
     symbolName;
-    sequences = [];
+    sequences;
 
-    constructor (name, symbolName) {
+    constructor (name, symbolName, sequences = []) {
         this.name = name;
         this.symbolName = symbolName;
-    }
-
-    constructor (name, symbolName, sequences) {
-        this(name, symbolName);
         this.sequences = sequences;
     }
 
@@ -40,18 +36,16 @@ export class SequenceClass {
 }
 
 export class DataStore {
-    sequenceClasses = [];
+    sequenceClasses;
+    negativeSeqClass;
 
-    constructor () {
-        this.sequenceClasses = [];
-    }
-
-    constructor (sequenceClasses) {
+    constructor (sequenceClasses = []) {
         this.sequenceClasses = sequenceClasses;
+        this.negativeSeqClass = new SequenceClass("Negatives", "");
     }
 
     existsName (sequenceClassName) {
-        return this.sequenceClasses.find(c => c.name === sequenceClassName) !== undefined;
+        return sequenceClassName !== "Negatives" || this.sequenceClasses.find(c => c.name === sequenceClassName) !== undefined;
     }
 
     copy () {

@@ -11,18 +11,35 @@ import InitialPage from './main_pages/initial/InitialPage';
 import PopupProvider, { usePopup } from './components/PopupProvider';
 import EditPathClassPopup from './popups/EditPathClassPopup';
 import { useUiStore } from './stores/ui_store';
+import EditingMenu from './menu/EditingMenu';
 
 function download() {
 }
 
+function LeftMenu({ children }) {
+    return (
+        <div className='leftMenu'>
+            {children}
+        </div>
+    );
+}
+
+function MainWindow({ children }) {
+    return (
+        <div className='mainWindow'>
+            {children}
+        </div>
+    );
+}
+
 function Content() {
     const mode = useUiStore((state) => state.mode);
+    const setMode = useUiStore((state) => state.setMode);
     const [project, setProject] = useState(null);
     const { popup, setPopup } = usePopup();
 
     const onProjectInput = (project) => {
         setProject(project);
-        alert('Project loaded');
         setMode('edit');
     }
 
@@ -32,23 +49,32 @@ function Content() {
 
     return (
         <>
-            {popup && 
+            {popup &&
                 popup
             }
-            <Header/>
-            {mode==='init' && 
+            <Header />
+            {mode === 'init' &&
                 <InitialPage onProjectInput={onProjectInput} />
             }
-            <DownloadButton onClick={handleDownload} />
-            <PlusButton onClick={() => setPopup(<EditPathClassPopup/>)} />
-            <LeftArrowButton />
-            <RightArrowButton />
-            <EditableButton onClick={() => alert('click')} onEdit={() => alert('edit')} backgroundColor={'var(--primary)'}>
-                test
-            </EditableButton>
-            <RoundButton onClick={() => alert('click')} backgroundColor='green'>
-                Test
-            </RoundButton>
+            {mode === 'edit' &&
+                <>
+                    <LeftMenu>
+                        <EditingMenu />
+                    </LeftMenu>
+                    <MainWindow>
+                        <DownloadButton onClick={handleDownload} />
+                        <PlusButton onClick={() => setPopup(<EditPathClassPopup />)} />
+                        <LeftArrowButton />
+                        <RightArrowButton />
+                        <EditableButton onClick={() => alert('click')} onEdit={() => alert('edit')} backgroundColor={'var(--primary)'}>
+                            test
+                        </EditableButton>
+                        <RoundButton onClick={() => alert('click')} backgroundColor='green'>
+                            Test
+                        </RoundButton>
+                    </MainWindow>
+                </>
+            }
         </>
     );
 }
