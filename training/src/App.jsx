@@ -10,12 +10,13 @@ import RoundButton from './components/buttons/RoundButton';
 import InitialPage from './main_pages/initial/InitialPage';
 import PopupProvider, { usePopup } from './components/PopupProvider';
 import EditPathClassPopup from './popups/EditPathClassPopup';
+import { useUiStore } from './stores/ui_store';
 
 function download() {
 }
 
 function Content() {
-    const [mode, setMode] = useState('init');
+    const mode = useUiStore((state) => state.mode);
     const [project, setProject] = useState(null);
     const { popup, setPopup } = usePopup();
 
@@ -34,7 +35,7 @@ function Content() {
             {popup && 
                 popup
             }
-            <Header mode={mode} setMode={setMode}/>
+            <Header/>
             {mode==='init' && 
                 <InitialPage onProjectInput={onProjectInput} />
             }
