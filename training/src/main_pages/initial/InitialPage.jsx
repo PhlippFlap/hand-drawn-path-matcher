@@ -1,7 +1,6 @@
 import './InitialPage.css';
 import RoundButton from '../../components/buttons/RoundButton';
 import FileUploadArea from '../../components/FileUploadArea';
-import { useState } from 'react';
 
 function InitialPage({ onProjectInput }) {
     const onFileUpload = (file) => {

@@ -1,7 +1,7 @@
 import './Header.css';
 import SwitchButton from "./components/buttons/SwitchButton";
 import DownloadButton from "./components/buttons/DownloadButton";
-import { useUiStore } from './stores/ui_store';
+import { useUiStore } from './stores/uiStore';
 
 function Header() {
     const mode = useUiStore((state) => state.mode);

@@ -1,6 +1,6 @@
 import './EditingMenu.css'
-import { useDataStore } from "../stores/data_store";
-import { useUiStore } from '../stores/ui_store';
+import { useDataStore } from "../stores/dataStore";
+import { useUiStore } from '../stores/uiStore';
 import { useShallow } from 'zustand/react/shallow'
 import EditableButton from '../components/buttons/EditableButton';
 import { usePopup } from '../components/PopupProvider';
@@ -10,8 +10,8 @@ import RoundButton from '../components/buttons/RoundButton';
 
 function EditingMenu() {
     // I'm not sure if useShallow works in this scenario
-    const seqClasses = useDataStore(useShallow((state) => state.data.sequenceClasses));
-    const negSeqClass = useDataStore((state) => state.data.negativeSeqClass);
+    const seqClasses = useDataStore(useShallow((state) => state.sequenceClasses));
+    const negSeqClass = useDataStore((state) => state.negativeSeqClass);
     const chosenClass = useUiStore((state) => state.chosenSequenceClass);
     const setChosenClass = useUiStore((state) => state.setChosenSeqClass);
     const { popup, setPopup } = usePopup();
@@ -21,11 +21,12 @@ function EditingMenu() {
     }
 
     const onEdit = (seqClass) => {
-        setPopup(<EditPathClassPopup/>)
+        setChosenClass(seqClass);
+        setPopup(<EditPathClassPopup type='edit' />);
     }
 
     const onNew = (seqClass) => {
-        setPopup(<EditPathClassPopup/>)
+        setPopup(<EditPathClassPopup type='new' />)
     }
 
     return (
@@ -34,28 +35,30 @@ function EditingMenu() {
                 backgroundColor={(chosenClass && chosenClass.name === negSeqClass.name) ? 'var(--editmode-primary)' : 'var(--editmode-primary-dark)'}
                 onClick={() => onSelect(negSeqClass)}
             >
-                { negSeqClass.name }
+                {negSeqClass.name}
             </RoundButton>
             <div className='separator' />
             <ul>
-                {seqClasses.map((item) => {
+                {seqClasses.map((item) => (
                     <li key={item.name}>
                         <EditableButton
                             backgroundColor={(chosenClass && item.name === chosenClass.name) ? 'var(--editmode-primary)' : 'var(--editmode-primary-dark)'}
-                            onEdit={(item) => onEdit(item)}
-                            onClick={(item) => onSelect(item)}
+                            onEdit={() => onEdit(item)}
+                            onClick={() => onSelect(item)}
                         >
-                            <span className='seqClassName'>
-                                {item.name}
-                            </span>
-                            <span className='symbolName'>
-                                {" | " + item.symbolName}
-                            </span>
+                            <div className='buttonContent'>
+                                <span className='seqClassName'>
+                                    {item.name}
+                                </span>
+                                <span className='symbolName'>
+                                    {" | " + item.symbolName}
+                                </span>
+                            </div>
                         </EditableButton>
                     </li>
-                })}
+                ))}
             </ul>
-            <PlusButton onClick={onNew}/>
+            <PlusButton onClick={onNew} />
         </div>
     );
 }

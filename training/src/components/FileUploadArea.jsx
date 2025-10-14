@@ -1,5 +1,5 @@
 import './FileUploadArea.css';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 
 // Accepts 1 JSON file
 function FileUploadArea({ onFileUpload }) {
@@ -28,11 +28,10 @@ function FileUploadArea({ onFileUpload }) {
             dropContainerRef.current.addEventListener("drop", (e) => {
                 e.preventDefault();
                 dropContainerRef.current.classList.remove("drag-active");
-                // Seems to be not required:
                 onFileInput(e.dataTransfer.files[0]);
             })
         }
-    }, []);
+    }, [onFileInput]);
 
     return (
         <label htmlFor="fileUpload" className="drop-container" ref={dropContainerRef}>

@@ -20,6 +20,7 @@
   --gray: gray;
   --gray-dark: rgb(72, 72, 72);
   --gray-darker: rgb(44, 44, 44);
+  --red: rgb(122, 15, 15);
 
   --header-height: 3.5rem;
 }

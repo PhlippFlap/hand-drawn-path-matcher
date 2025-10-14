@@ -10,7 +10,7 @@ import RoundButton from './components/buttons/RoundButton';
 import InitialPage from './main_pages/initial/InitialPage';
 import PopupProvider, { usePopup } from './components/PopupProvider';
 import EditPathClassPopup from './popups/EditPathClassPopup';
-import { useUiStore } from './stores/ui_store';
+import { useUiStore } from './stores/uiStore';
 import EditingMenu from './menu/EditingMenu';
 
 function download() {

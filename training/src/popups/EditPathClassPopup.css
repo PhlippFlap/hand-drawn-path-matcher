@@ -46,6 +46,10 @@
         }
     }
 
+    .deleteContainer {
+        width: 35%;
+    }
+
     .bottomButtons {
         display: flex;
         width: 100%;
