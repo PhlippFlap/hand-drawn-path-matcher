@@ -1,65 +1,89 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Stage, Layer, Line, Text } from 'react-konva';
 
-function DrawingCanvas () {
-  const [lines, setLines] = useState([]);
-  const isDrawing = useRef(false);
+function DrawingCanvas({ 
+    handlePath, // Function that expects the finished path as parameter.
+    //  A path is a sequence of point coordinates like x1, y1, x2, y2, ...
+    initialPath = [],
+    // canDraw // true if the user is allowed to draw a new path
+}) {
+    const divRef = useRef(null)
+    const [dimensions, setDimensions] = useState({
+        width: 0,
+        height: 0
+    })
 
-  const handleMouseDown = (e) => {
-    isDrawing.current = true;
-    const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { points: [pos.x, pos.y] }]);
-  };
-
-  const handleMouseMove = (e) => {
-    // no drawing - skipping
-    if (!isDrawing.current) {
-      return;
+    // We cant set the h & w on Stage to 100% it only takes px values so we have to
+    // find the parent container's w and h and then manually set those !
+    const computeSize = () => {
+        if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
+            setDimensions({
+                width: divRef.current.offsetWidth,
+                height: divRef.current.offsetHeight
+            })
+        }
     }
-    const stage = e.target.getStage();
-    const point = stage.getPointerPosition();
-    let lastLine = lines[lines.length - 1];
-    // add point
-    lastLine.points = lastLine.points.concat([point.x, point.y]);
 
-    // replace last
-    lines.splice(lines.length - 1, 1, lastLine);
-    setLines(lines.concat());
-  };
+    useEffect(() => {
+        computeSize();
+        window.addEventListener('resize', computeSize);
+    
+        return () => {
+            window.removeEventListener('resize', computeSize);
+        };
+    }, [])
 
-  const handleMouseUp = () => {
-    isDrawing.current = false;
-  };
+    const [path, setPath] = useState(initialPath);
+    const isDrawing = useRef(false);
 
-  return (
-    <div>
-      <Stage
-        width={400}
-        height={400}
-        onMouseDown={handleMouseDown}
-        onMousemove={handleMouseMove}
-        onMouseup={handleMouseUp}
-        onTouchStart={handleMouseDown}
-        onTouchMove={handleMouseMove}
-        onTouchEnd={handleMouseUp}
-      >
-        <Layer>
-          <Text text="Just start drawing" x={5} y={30} />
-          {lines.map((line, i) => (
-            <Line
-              key={i}
-              points={line.points}
-              stroke="white"
-              strokeWidth={1}
-              //tension={0.5}
-              // lineCap="round"
-              // lineJoin="round"
-            />
-          ))}
-        </Layer>
-      </Stage>
-    </div>
-  );
+    const handleMouseDown = (e) => {
+        isDrawing.current = true;
+        const pos = e.target.getStage().getPointerPosition();
+        setPath([pos.x, pos.y]);
+    };
+
+    const handleMouseMove = (e) => {
+        // no drawing - skipping
+        if (!isDrawing.current) {
+            return;
+        }
+        const stage = e.target.getStage();
+        const point = stage.getPointerPosition();
+
+        // add point
+        setPath(path.concat([point.x, point.y]));
+    };
+
+    const handleMouseUp = () => {
+        isDrawing.current = false;
+        handlePath(path);
+    };
+
+    return (
+        <div ref={divRef} style={{width: '100%', height: '100%'}}>
+            <Stage
+                width={dimensions.width} 
+                height={dimensions.height}
+                onMouseDown={handleMouseDown}
+                onMousemove={handleMouseMove}
+                onMouseup={handleMouseUp}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseUp}
+            >
+                <Layer>
+                    <Line
+                        points={path}
+                        stroke="white"
+                        strokeWidth={1}
+                        //tension={0.5}
+                        // lineCap="round"
+                        // lineJoin="round"
+                    />
+                </Layer>
+            </Stage>
+        </div>
+    );
 };
 
 export default DrawingCanvas;

@@ -35,6 +35,12 @@ function EditingPage() {
     // possible states: menu, browse, edit, add
     const [mode, setMode] = useState('menu');
 
+    const handlePath = (path) => {
+        if (mode === 'add') {
+            alert(path.length);
+        }
+    }
+
     return (
         <>
             {mode==='menu' &&
@@ -45,7 +51,7 @@ function EditingPage() {
                     <BackButton onCLick={() => setMode('menu')} />
                     <div className='canvasView'>
                         <div className='canvasContainer'>
-                            <DrawingCanvas />
+                            <DrawingCanvas handlePath={handlePath}/>
                         </div>
                         <div className='canvasButtons'>
                             <LeftArrowButton onClick={() => {}}/>
