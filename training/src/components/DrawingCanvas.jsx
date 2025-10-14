@@ -1,28 +1,65 @@
-import { ReactP5Wrapper } from "@p5-wrapper/react";
+import { useState, useRef } from 'react';
+import { Stage, Layer, Line, Text } from 'react-konva';
 
-function sketch(p5, props) {
-    const { color = 200 } = props; // Default color if not provided
+function DrawingCanvas () {
+  const [lines, setLines] = useState([]);
+  const isDrawing = useRef(false);
 
-    p5.setup = () => {
-        p5.createCanvas(100, 100, p5.WEBGL);
-    };
+  const handleMouseDown = (e) => {
+    isDrawing.current = true;
+    const pos = e.target.getStage().getPointerPosition();
+    setLines([...lines, { points: [pos.x, pos.y] }]);
+  };
 
-    p5.draw = () => {
-        p5.background(color); // Use the passed color prop
-        p5.normalMaterial();
-        p5.push();
-        p5.rotateZ(p5.frameCount * 0.01);
-        p5.rotateX(p5.frameCount * 0.01);
-        p5.rotateY(p5.frameCount * 0.01);
-        p5.plane(100);
-        p5.pop();
-    };
-}
+  const handleMouseMove = (e) => {
+    // no drawing - skipping
+    if (!isDrawing.current) {
+      return;
+    }
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+    // add point
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
 
-function DrawingCanvas() {
-    return (
-        <ReactP5Wrapper sketch={sketch} color={100} />
-    );
-}
+    // replace last
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
+  };
+
+  const handleMouseUp = () => {
+    isDrawing.current = false;
+  };
+
+  return (
+    <div>
+      <Stage
+        width={400}
+        height={400}
+        onMouseDown={handleMouseDown}
+        onMousemove={handleMouseMove}
+        onMouseup={handleMouseUp}
+        onTouchStart={handleMouseDown}
+        onTouchMove={handleMouseMove}
+        onTouchEnd={handleMouseUp}
+      >
+        <Layer>
+          <Text text="Just start drawing" x={5} y={30} />
+          {lines.map((line, i) => (
+            <Line
+              key={i}
+              points={line.points}
+              stroke="white"
+              strokeWidth={1}
+              //tension={0.5}
+              // lineCap="round"
+              // lineJoin="round"
+            />
+          ))}
+        </Layer>
+      </Stage>
+    </div>
+  );
+};
 
 export default DrawingCanvas;
