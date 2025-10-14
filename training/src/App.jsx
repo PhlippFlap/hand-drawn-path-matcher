@@ -7,11 +7,12 @@ import RightArrowButton from './components/buttons/RightArrowButton';
 import Header from './Header';
 import EditableButton from './components/buttons/EditableButton';
 import RoundButton from './components/buttons/RoundButton';
-import InitialPage from './main_pages/initial/InitialPage';
+import InitialPage from './main_pages/InitialPage';
 import PopupProvider, { usePopup } from './components/PopupProvider';
 import EditPathClassPopup from './popups/EditPathClassPopup';
 import { useUiStore } from './stores/uiStore';
 import EditingMenu from './menu/EditingMenu';
+import EditingPage from './main_pages/EditingPage';
 
 function download() {
 }
@@ -62,16 +63,7 @@ function Content() {
                         <EditingMenu />
                     </LeftMenu>
                     <MainWindow>
-                        <DownloadButton onClick={handleDownload} />
-                        <PlusButton onClick={() => setPopup(<EditPathClassPopup />)} />
-                        <LeftArrowButton />
-                        <RightArrowButton />
-                        <EditableButton onClick={() => alert('click')} onEdit={() => alert('edit')} backgroundColor={'var(--primary)'}>
-                            test
-                        </EditableButton>
-                        <RoundButton onClick={() => alert('click')} backgroundColor='green'>
-                            Test
-                        </RoundButton>
+                        <EditingPage />
                     </MainWindow>
                 </>
             }

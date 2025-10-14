@@ -1,0 +1,24 @@
+.backButton {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.4rem;
+    align-items: center;
+    justify-content: start;
+    background: none;
+    padding: 0.5rem;
+    padding-left: 0.7rem;
+    transition: column-gap 0.1s ease-in-out;
+
+    .backArrowIcon {
+        height: 0.7rem;
+    }
+
+    span {
+        color: white;
+    }
+}
+
+.backButton:hover {
+    column-gap: 0.7rem;
+}

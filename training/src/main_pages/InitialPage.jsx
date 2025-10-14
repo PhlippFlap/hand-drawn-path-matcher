@@ -1,6 +1,6 @@
 import './InitialPage.css';
-import RoundButton from '../../components/buttons/RoundButton';
-import FileUploadArea from '../../components/FileUploadArea';
+import RoundButton from '../components/buttons/RoundButton';
+import FileUploadArea from '../components/FileUploadArea';
 
 function InitialPage({ onProjectInput }) {
     const onFileUpload = (file) => {
