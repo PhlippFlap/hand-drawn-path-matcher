@@ -4,6 +4,7 @@ import RoundButton from '../components/buttons/RoundButton';
 import BackButton from '../components/buttons/BackButton';
 import LeftArrowButton from '../components/buttons/LeftArrowButton';
 import RightArrowButton from '../components/buttons/RightArrowButton';
+import DrawingCanvas from '../components/DrawingCanvas';
 
 function Menu({ setMode }) {
     return (
@@ -44,7 +45,7 @@ function EditingPage() {
                     <BackButton onCLick={() => setMode('menu')} />
                     <div className='canvasView'>
                         <div className='canvasContainer'>
-
+                            <DrawingCanvas />
                         </div>
                         <div className='canvasButtons'>
                             <LeftArrowButton onClick={() => {}}/>
