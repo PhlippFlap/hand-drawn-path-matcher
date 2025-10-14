@@ -11,6 +11,7 @@ function EditPathClassPopup({
 }) {
     const { popup, setPopup } = usePopup();
     const chosenSeqClass = useUiStore((state) => state.chosenSequenceClass);
+    const setChosenSeqClass = useUiStore((state) => state.setChosenSeqClass);
     const addSequenceClass = useDataStore((state) => state.addSequenceClass);
     const removeSequenceClass = useDataStore((state) => state.removeSequenceClass);
     const updateSequenceClass = useDataStore((state) => state.updateSequenceClass);
@@ -25,11 +26,28 @@ function EditPathClassPopup({
 
     const handleSave = () => {
         if (type === 'new') {
-            addSequenceClass(classNameRef.current.value, symbolNameRef.current.value);
+            const newSequenceClass = {
+                name: classNameRef.current.value,
+                symbolName: symbolNameRef.current.value,
+                sequences: []
+            }
+            const success = addSequenceClass(newSequenceClass);
+            if (success) {
+                setChosenSeqClass(newSequenceClass);
+                setPopup(null);
+            }
         } else {
-            updateSequenceClass(chosenSeqClass, classNameRef.current.value, symbolNameRef.current.value);
+            const updatedSequenceClass = {
+                ...chosenSeqClass,
+                name: classNameRef.current.value,
+                symbolName: symbolNameRef.current.value
+            }
+            const success = updateSequenceClass(chosenSeqClass, updatedSequenceClass);
+            if (success) {
+                setChosenSeqClass(updatedSequenceClass);
+                setPopup(null);
+            }
         }
-        setPopup(null);
     }
 
     return (

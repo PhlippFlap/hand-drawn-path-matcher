@@ -91,33 +91,53 @@ export const useDataStore = create((set) => ({
         ({ data: state.data.setSequenceClass(sequenceClass, sequenceClass.removeSequence(sequence)) })
     ))),
 }));
+
 */
 
-export const useDataStore = create((set) => ({
+export const useDataStore = create((set, get) => ({
     sequenceClasses: [],
     negativeSeqClass: {
         name: "Negatives",
         symbolName: "",
         sequences: [],
     },
-    addSequenceClass: (className, symbolName) => (set((state) => (
-        { sequenceClasses: [...state.sequenceClasses, {
-                name: className,
-                symbolName: symbolName,
-                sequences: [] 
-            }]
-        }
-    ))),
+    addSequenceClass: (sequenceClass) => {
+        // name already taken?
+        if (sequenceClass.name === 'Negatives' || get().sequenceClasses.find((item) => item.name === sequenceClass.name) !== undefined) {
+            return false;
+        }   
+        set((state) => (
+            { sequenceClasses: [...state.sequenceClasses, sequenceClass] }
+        ))
+        return true;
+    },
     removeSequenceClass: (sequenceClass) => (set((state) => (
-        {}
+        { sequenceClasses: [...state.sequenceClasses.filter((item) => item.name !== sequenceClass.name)]}
     ))),
-    updateSequenceClass: (sequenceClass, className, symbolName) => (set((state) => (
-        {}
-    ))),
+    updateSequenceClass: (oldSequenceClass, newSequenceClass) => {
+        if (oldSequenceClass.name !== newSequenceClass.name) {
+            // name already taken?
+            if (newSequenceClass.name === 'Negatives' || get().sequenceClasses.find((item) => item.name === newSequenceClass.name) !== undefined) {
+                return false;
+            }
+        }
+        set((state) => (
+            { sequenceClasses: [...state.sequenceClasses.map((item) => item.name === oldSequenceClass.name ?
+                newSequenceClass : item
+            )]}
+        ))
+        return true;
+    },
     addSequence: (sequenceClass, newSequence) => (set((state) => (
-        {}
+        { sequenceClasses: state.sequenceClasses.map((item) => item.name === sequenceClass.name ?
+            { ...item, sequences: [...item.sequences, newSequence]}
+            : { ...item }
+        )}
     ))),
     removeSequence: (sequenceClass, sequence) => (set((state) => (
-        {}
+        { sequenceClasses: state.sequenceClasses.map((item) => item.name === sequenceClass.name ?
+            { ...item, sequences: [...item.sequences.filter((s) => s !== sequence)]}
+            : { ...item }
+        )}
     ))),
 }))
