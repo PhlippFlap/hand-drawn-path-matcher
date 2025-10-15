@@ -50,5 +50,10 @@
             flex-grow: 1;
             flex-basis: 0;
         }
+
+        .canvasNaviButtonContainer {
+            flex-basis: 2.5rem;
+            flex-grow: 0;
+        }
     }
 }

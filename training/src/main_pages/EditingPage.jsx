@@ -66,6 +66,7 @@ function AddPage() {
                 <DrawingCanvas path={path} handlePath={handlePathAdding} />
             </div>
             <div className='canvasButtons'>
+                <div className='canvasNaviButtonContainer' />
                 <div className='canvasButtonContainer'>
                     <RoundButton onClick={handleRemoveLatest} backgroundColor={'var(--red)'}>
                         Remove
@@ -76,12 +77,13 @@ function AddPage() {
                         Keep
                     </RoundButton>
                 </div>
+                <div className='canvasNaviButtonContainer' />
             </div>
         </div>
     );
 }
 
-function BrowsePage({ editMode=false }) {
+function BrowsePage({ editMode = false }) {
     const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
     const [seqIndex, setSeqIndex] = useState(0);
     const getSequenceCount = useDataStore((state) => state.getSequenceCount);
@@ -95,7 +97,7 @@ function BrowsePage({ editMode=false }) {
 
     useEffect(() => {
         updatePath();
-    },[seqIndex, chosenSeqClsName]);
+    }, [seqIndex, chosenSeqClsName]);
 
     const seqAvailable = (seqClsName, index) => {
         return getSequence(seqClsName, index) !== undefined;
@@ -117,10 +119,12 @@ function BrowsePage({ editMode=false }) {
                 }
             </div>
             <div className='canvasButtons'>
-                {(seqIndex > 0 && seqAvailable(chosenSeqClsName, seqIndex)) && 
-                    <LeftArrowButton onClick={() => setSeqIndex(seqIndex - 1)} />
-                }
-                {(editMode && seqAvailable(chosenSeqClsName, seqIndex)) && 
+                <div className='canvasNaviButtonContainer'>
+                    {(seqIndex > 0 && seqAvailable(chosenSeqClsName, seqIndex)) &&
+                        <LeftArrowButton onClick={() => setSeqIndex(seqIndex - 1)} />
+                    }
+                </div>
+                {(editMode && seqAvailable(chosenSeqClsName, seqIndex)) &&
                     <>
                         <div className='canvasButtonContainer'>
                             <RoundButton onClick={onDelete} backgroundColor={'var(--red)'}>
@@ -128,8 +132,8 @@ function BrowsePage({ editMode=false }) {
                             </RoundButton>
                         </div>
                         <div className='canvasButtonContainer'>
-                            <RoundButton 
-                                onClick={() => (seqIndex + 1 < getSequenceCount(chosenSeqClsName) ? setSeqIndex(seqIndex + 1) : {})} 
+                            <RoundButton
+                                onClick={() => (seqIndex + 1 < getSequenceCount(chosenSeqClsName) ? setSeqIndex(seqIndex + 1) : {})}
                                 backgroundColor={'var(--primary)'}
                             >
                                 Keep
@@ -137,15 +141,17 @@ function BrowsePage({ editMode=false }) {
                         </div>
                     </>
                 }
-                {seqAvailable(chosenSeqClsName, seqIndex + 1) &&
-                    <RightArrowButton onClick={() => setSeqIndex(seqIndex + 1)} />
-                }
+                <div className='canvasNaviButtonContainer'>
+                    {seqAvailable(chosenSeqClsName, seqIndex + 1) &&
+                        <RightArrowButton onClick={() => setSeqIndex(seqIndex + 1)} />
+                    }
+                </div>
             </div>
         </div>
     );
 }
 
-function EditingPageNonEmpty ({ chosenClsName }) {
+function EditingPageNonEmpty({ chosenClsName }) {
     // possible states: menu, browse, edit, add
     const [mode, setMode] = useState('menu');
 
@@ -184,7 +190,7 @@ function EditingPage() {
                 <TutorialPage />
             }
             {chosenClsName != null &&
-                <EditingPageNonEmpty chosenClsName={chosenClsName}/>
+                <EditingPageNonEmpty chosenClsName={chosenClsName} />
             }
         </>
     );
