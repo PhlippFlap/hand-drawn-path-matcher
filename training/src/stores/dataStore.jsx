@@ -32,6 +32,12 @@ export const useDataStore = create((set, get) => ({
         }
         return seqClass.sequences[index];
     },
+    // replace everything with newState (except actions)
+    load: (newState) => {
+        set((state) => (
+            { sequenceClasses: newState.sequenceClasses }
+        ));
+    },
     addSequenceClass: (clsName, symbolName, sequences) => {
         // name already taken?
         if (get().sequenceClasses.find((item) => item.name === clsName) !== undefined) {

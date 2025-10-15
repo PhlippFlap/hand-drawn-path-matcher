@@ -6,6 +6,7 @@ import PopupProvider, { usePopup } from './components/PopupProvider';
 import { useUiStore } from './stores/uiStore';
 import EditingMenu from './menu/EditingMenu';
 import EditingPage from './main_pages/EditingPage';
+import { useDataStore } from './stores/dataStore';
 
 function download() {
 }
@@ -29,16 +30,12 @@ function MainWindow({ children }) {
 function Content() {
     const mode = useUiStore((state) => state.mode);
     const setMode = useUiStore((state) => state.setMode);
-    const [project, setProject] = useState(null);
+    const loadData = useDataStore((state) => state.load);
     const { popup, setPopup } = usePopup();
 
     const onProjectInput = (project) => {
-        setProject(project);
+        loadData(project);
         setMode('edit');
-    }
-
-    const handleDownload = () => {
-        setMode('download');
     }
 
     return (

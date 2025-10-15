@@ -3,11 +3,27 @@ import RoundButton from '../components/buttons/RoundButton';
 import FileUploadArea from '../components/FileUploadArea';
 
 function InitialPage({ onProjectInput }) {
+    let fileReader;
+
+     const handleFileRead = (e) => {
+        const content = fileReader.result;
+        const project = JSON.parse(content);
+        onProjectInput(project);
+    };
+
     const onFileUpload = (file) => {
         if (file != null) {
             try {
-                const project = JSON.parse(file);
-                onProjectInput(project);
+                fileReader = new FileReader();
+                fileReader.onloadend = handleFileRead;
+                fileReader.readAsText(file);
+                //file.then((f) => f.text())
+                //.then((textContent) => {
+                //    alert(textContent);
+                //});
+                //const cleanedFile = file.replace("\n", "");
+                //const project = JSON.parse(cleanedFile);
+                //onProjectInput(project);
             }
             catch (err) {
                 alert('Failed to read JSON file: ' + err.message);
