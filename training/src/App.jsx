@@ -1,15 +1,8 @@
 import { useState } from 'react'
 import './App.css'
-import DownloadButton from './components/buttons/DownloadButton';
-import PlusButton from './components/buttons/PlusButton';
-import LeftArrowButton from './components/buttons/LeftArrowButton';
-import RightArrowButton from './components/buttons/RightArrowButton';
 import Header from './Header';
-import EditableButton from './components/buttons/EditableButton';
-import RoundButton from './components/buttons/RoundButton';
 import InitialPage from './main_pages/InitialPage';
 import PopupProvider, { usePopup } from './components/PopupProvider';
-import EditPathClassPopup from './popups/EditPathClassPopup';
 import { useUiStore } from './stores/uiStore';
 import EditingMenu from './menu/EditingMenu';
 import EditingPage from './main_pages/EditingPage';
