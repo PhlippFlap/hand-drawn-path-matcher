@@ -1,45 +1,28 @@
 import { useState, useRef, useEffect } from 'react';
 import { Stage, Layer, Line, Text } from 'react-konva';
+import PixelConverter from './PixelConverter';
+import ViewingCanvas from './ViewingCanvas';
 
 function DrawingCanvas({ 
-    handlePath, // Function that expects the finished path as parameter.
+    path, handlePath
     //  A path is a sequence of point coordinates like x1, y1, x2, y2, ...
-    initialPath = [],
-    // canDraw // true if the user is allowed to draw a new path
 }) {
-    const divRef = useRef(null)
     const [dimensions, setDimensions] = useState({
         width: 0,
         height: 0
     })
 
-    // We cant set the h & w on Stage to 100% it only takes px values so we have to
-    // find the parent container's w and h and then manually set those !
-    const computeSize = () => {
-        if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
-            setDimensions({
-                width: divRef.current.offsetWidth,
-                height: divRef.current.offsetHeight
-            })
-        }
-    }
-
+    const [localPath, setLocalPath] = useState(path);
     useEffect(() => {
-        computeSize();
-        window.addEventListener('resize', computeSize);
-    
-        return () => {
-            window.removeEventListener('resize', computeSize);
-        };
-    }, [])
+        setLocalPath(path);
+    }, [path]);
 
-    const [path, setPath] = useState(initialPath);
     const isDrawing = useRef(false);
 
     const handleMouseDown = (e) => {
         isDrawing.current = true;
         const pos = e.target.getStage().getPointerPosition();
-        setPath([pos.x, pos.y]);
+        setLocalPath([pos.x, pos.y]);
     };
 
     const handleMouseMove = (e) => {
@@ -51,16 +34,16 @@ function DrawingCanvas({
         const point = stage.getPointerPosition();
 
         // add point
-        setPath(path.concat([point.x, point.y]));
+        setLocalPath(localPath.concat([point.x, point.y]));
     };
 
     const handleMouseUp = () => {
         isDrawing.current = false;
-        handlePath(path);
+        handlePath(localPath);
     };
 
     return (
-        <div ref={divRef} style={{width: '100%', height: '100%'}}>
+        <PixelConverter setDimensions={setDimensions}>
             <Stage
                 width={dimensions.width} 
                 height={dimensions.height}
@@ -73,7 +56,7 @@ function DrawingCanvas({
             >
                 <Layer>
                     <Line
-                        points={path}
+                        points={localPath}
                         stroke="white"
                         strokeWidth={1}
                         //tension={0.5}
@@ -82,7 +65,7 @@ function DrawingCanvas({
                     />
                 </Layer>
             </Stage>
-        </div>
+        </PixelConverter>
     );
 };
 

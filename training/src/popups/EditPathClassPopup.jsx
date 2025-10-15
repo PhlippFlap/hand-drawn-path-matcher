@@ -4,48 +4,46 @@ import Popup from '../components/Popup';
 import { usePopup } from '../components/PopupProvider';
 import { useUiStore } from '../stores/uiStore';
 import { useDataStore } from '../stores/dataStore';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 function EditPathClassPopup({
     type // either 'new' or 'edit'
 }) {
     const { popup, setPopup } = usePopup();
-    const chosenSeqClass = useUiStore((state) => state.chosenSequenceClass);
-    const setChosenSeqClass = useUiStore((state) => state.setChosenSeqClass);
+    const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
+    const getSymbolName = useDataStore((state) => state.getSymbolName);
+    const setChosenSeqClsName = useUiStore((state) => state.setChosenSeqClassName);
     const addSequenceClass = useDataStore((state) => state.addSequenceClass);
     const removeSequenceClass = useDataStore((state) => state.removeSequenceClass);
     const updateSequenceClass = useDataStore((state) => state.updateSequenceClass);
+    const [ errMessage, setErrMessage ] = useState("");
 
     const symbolNameRef = useRef(null);
     const classNameRef = useRef(null);
 
     const handleDelete = () => {
-        removeSequenceClass(chosenSeqClass);
+        removeSequenceClass(chosenSeqClsName);
         setPopup(null);
     }
 
     const handleSave = () => {
+        const name = classNameRef.current.value;
+        const symbolName = symbolNameRef.current.value;
         if (type === 'new') {
-            const newSequenceClass = {
-                name: classNameRef.current.value,
-                symbolName: symbolNameRef.current.value,
-                sequences: []
-            }
-            const success = addSequenceClass(newSequenceClass);
+            const { success, err } = addSequenceClass(name, symbolName, []);
             if (success) {
-                setChosenSeqClass(newSequenceClass);
+                setChosenSeqClsName(name);
                 setPopup(null);
+            } else {
+                setErrMessage(err);
             }
         } else {
-            const updatedSequenceClass = {
-                ...chosenSeqClass,
-                name: classNameRef.current.value,
-                symbolName: symbolNameRef.current.value
-            }
-            const success = updateSequenceClass(chosenSeqClass, updatedSequenceClass);
+            const { success, err } = updateSequenceClass(chosenSeqClsName, name, symbolName);
             if (success) {
-                setChosenSeqClass(updatedSequenceClass);
+                setChosenSeqClsName(name);
                 setPopup(null);
+            } else {
+                setErrMessage(err);
             }
         }
     }
@@ -60,7 +58,7 @@ function EditPathClassPopup({
                         </label>
                         <input id="symbolName" ref={symbolNameRef} type="text" name="symbolNameInput"
                             placeholder={type === 'new' ? 'e.g. My-Symbol' : ''}
-                            defaultValue={type === 'edit' ? chosenSeqClass.symbolName : ''}
+                            defaultValue={type === 'edit' ? getSymbolName(chosenSeqClsName) : ''}
                         />
                     </div>
                     <p>
@@ -75,7 +73,7 @@ function EditPathClassPopup({
                         </label>
                         <input id="pathName" ref={classNameRef} type="text" name="pathClassNameInput"
                             placeholder={type === 'new' ? 'e.g. My-Name' : ''}
-                            defaultValue={type === 'edit' ? chosenSeqClass.name : ''}
+                            defaultValue={type === 'edit' ? chosenSeqClsName : ''}
                         />
                     </div>
                     <p>
@@ -84,6 +82,9 @@ function EditPathClassPopup({
                         There can be multiple class paths per symbol.
                     </p>
                 </div>
+                <span style={{color: 'red', height: '1.5rem'}}>
+                    {errMessage}
+                </span>
                 {type === 'edit' &&
                     <div className='deleteContainer'>
                         <RoundButton

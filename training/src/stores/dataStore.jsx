@@ -1,143 +1,91 @@
 import { create } from 'zustand';
 
-/*
-export class SequenceClass {
-    constructor (name, symbolName, sequences = []) {
-        this.name = name;
-        this.symbolName = symbolName;
-        this.sequences = sequences;
-    }
-
-    copy () {
-        return new SequenceClass(this.name, this.symbolName, [...this.sequences]);
-    }
-
-    addSequence(sequence) {
-        const copy = this.copy();
-        copy.sequences.push(sequence);
-        return copy;
-    }
-
-    removeSequence(sequence) {
-        const copy = this.copy();
-        copy.sequences = copy.sequences.filter(s => s !== sequence);
-        return copy;
-    }
-
-    update(name, symbolName) {
-        const copy = this.copy();
-        copy.name = name;
-        copy.symbolName = symbolName;
-        return copy;
-    }
-}
-
-export class DataStore {
-    constructor (sequenceClasses = []) {
-        this.sequenceClasses = sequenceClasses;
-        this.negativeSeqClass = new SequenceClass("Negatives", "");
-    }
-
-    existsName (sequenceClassName) {
-        // return true when the name is reserved ("Negatives") or already exists
-        return sequenceClassName === "Negatives" || this.sequenceClasses.find(c => c.name === sequenceClassName) !== undefined;
-    }
-
-    copy () {
-        return new DataStore([...this.sequenceClasses]);
-    }
-
-    addSequenceClass(sequenceClass) {
-        alert(sequenceClass.name);
-        if (!existsName(sequenceClass.sequences)) {
-            const copy = this.copy();
-            copy.sequenceClasses.push(sequenceClass);
-            return copy;
-        }
-        return this.copy();
-    }
-
-    removeSequenceClass(sequenceClass) {
-        const copy = this.copy();
-        copy.sequenceClasses = copy.sequenceClasses.filter(c => c !== sequenceClass);
-        return copy;
-    }
-
-    setSequenceClass(oldClass, newClass) {
-        const copy = this.copy();
-        copy.sequenceClasses = copy.sequenceClasses.map(c => (c === oldClass ? newClass : c));
-        return copy;
-    }
-}
-*/
-
-// Issue with this: this / existsName does not exists (class not working at all)
-/*
-export const useDataStore = create((set) => ({
-    data: new DataStore(),
-    addSequenceClass: (className, symbolName) => (set((state) => (
-        ({ data: state.data.addSequenceClass(new SequenceClass(className, symbolName)) })
-    ))),
-    removeSequenceClass: (sequenceClass) => (set((state) => (
-        ({ data: state.data.removeSequenceClass(sequenceClass) })
-    ))),
-    updateSequenceClass: (sequenceClass, className, symbolName) => (set((state) => (
-        ({ data: state.data.setSequenceClass(sequenceClass, sequenceClass.update(className, symbolName)) })
-    ))),
-    addSequence: (sequenceClass, newSequence) => (set((state) => (
-        ({ data: state.data.setSequenceClass(sequenceClass, sequenceClass.addSequence(newSequence)) })
-    ))),
-    removeSequence: (sequenceClass, sequence) => (set((state) => (
-        ({ data: state.data.setSequenceClass(sequenceClass, sequenceClass.removeSequence(sequence)) })
-    ))),
-}));
-
-*/
-
 export const useDataStore = create((set, get) => ({
-    sequenceClasses: [],
-    negativeSeqClass: {
-        name: "Negatives",
-        symbolName: "",
-        sequences: [],
+    sequenceClasses: [
+        {
+            name: "Negatives",
+            symbolName: "",
+            sequences: []
+        }
+    ],
+    getSymbolName: (clsName) => {
+        const seqClass = get().sequenceClasses.find((item) => item.name === clsName);
+        if (seqClass == undefined) {
+            return undefined;
+        } 
+        return seqClass.symbolName;
     },
-    addSequenceClass: (sequenceClass) => {
+    getSequenceCount: (clsName) => {
+        const seqClass = get().sequenceClasses.find((item) => item.name === clsName);
+        if (seqClass == undefined) {
+            return undefined;
+        } 
+        return seqClass.sequences.length;
+    },
+    getSequence: (clsName, index) => {
+        const seqClass = get().sequenceClasses.find((item) => item.name === clsName);
+        if (seqClass == undefined) {
+            return undefined;
+        } 
+        if (index < 0 || index >= seqClass.sequences.length) {
+            return undefined;
+        }
+        return seqClass.sequences[index];
+    },
+    addSequenceClass: (clsName, symbolName, sequences) => {
         // name already taken?
-        if (sequenceClass.name === 'Negatives' || get().sequenceClasses.find((item) => item.name === sequenceClass.name) !== undefined) {
-            return false;
+        if (get().sequenceClasses.find((item) => item.name === clsName) !== undefined) {
+            return { success: false, err: 'path name already taken' };
         }   
         set((state) => (
-            { sequenceClasses: [...state.sequenceClasses, sequenceClass] }
+            { sequenceClasses: [...state.sequenceClasses, {
+                name: clsName,
+                symbolName: symbolName,
+                sequences: sequences
+            }] }
         ))
-        return true;
+        return { success: true};
     },
-    removeSequenceClass: (sequenceClass) => (set((state) => (
-        { sequenceClasses: [...state.sequenceClasses.filter((item) => item.name !== sequenceClass.name)]}
+    removeSequenceClass: (clsName) => (set((state) => (
+        { sequenceClasses: [...state.sequenceClasses.filter((item) => item.name !== clsName)]}
     ))),
-    updateSequenceClass: (oldSequenceClass, newSequenceClass) => {
-        if (oldSequenceClass.name !== newSequenceClass.name) {
+    updateSequenceClass: (oldName, newName, newSymbolName) => {
+        if (oldName !== newName) {
             // name already taken?
-            if (newSequenceClass.name === 'Negatives' || get().sequenceClasses.find((item) => item.name === newSequenceClass.name) !== undefined) {
-                return false;
+            if (get().sequenceClasses.find((item) => item.name === newName) !== undefined) {
+                alert('fail');
+                return { success: false, err: 'path name already taken'};
             }
         }
         set((state) => (
-            { sequenceClasses: [...state.sequenceClasses.map((item) => item.name === oldSequenceClass.name ?
-                newSequenceClass : item
-            )]}
+            { sequenceClasses: state.sequenceClasses.map((item) => item.name === oldName ?
+                {
+                    name: newName,
+                    symbolName: newSymbolName,
+                    sequences: item.sequences
+                } : item
+            )}
         ))
-        return true;
+        return { success: true };
     },
-    addSequence: (sequenceClass, newSequence) => (set((state) => (
-        { sequenceClasses: state.sequenceClasses.map((item) => item.name === sequenceClass.name ?
-            { ...item, sequences: [...item.sequences, newSequence]}
-            : { ...item }
+    addSequence: (clsName, newSequence) => {
+        set((state) => {
+            return { sequenceClasses: state.sequenceClasses.map((item) => item.name === clsName ?
+                { ...item, sequences: [...item.sequences, newSequence] }
+                : item
+            )}
+        });
+    },
+    removeSequence: (clsName, seqIndex) => (set((state) => (
+        { sequenceClasses: state.sequenceClasses.map((item) => item.name === clsName ?
+            { ...item, sequences: item.sequences.filter((_, i) => i !== seqIndex)}
+            : item
         )}
     ))),
-    removeSequence: (sequenceClass, sequence) => (set((state) => (
-        { sequenceClasses: state.sequenceClasses.map((item) => item.name === sequenceClass.name ?
-            { ...item, sequences: [...item.sequences.filter((s) => s !== sequence)]}
-            : { ...item }
+    removeLastSequence: (clsName) => (set((state) => (
+        { sequenceClasses: state.sequenceClasses.map((item) => item.name === clsName ?
+            { ...item, sequences: item.sequences.slice(0, -1)}
+            : item
         )}
-    ))),
+    )))
 }))
