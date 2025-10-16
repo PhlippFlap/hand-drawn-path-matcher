@@ -8,6 +8,7 @@ import DrawingCanvas from '../components/DrawingCanvas';
 import { useUiStore } from '../stores/uiStore';
 import { useDataStore } from '../stores/dataStore'
 import ViewingCanvas from '../components/ViewingCanvas';
+import CanvasMenu from '../menu/CanvasMenu';
 
 function TutorialPage() {
     return (
@@ -61,25 +62,21 @@ function AddPage() {
     }
 
     return (
-        <div className='canvasView'>
-            <div className='canvasContainer'>
+        <CanvasMenu
+            canvas={
                 <DrawingCanvas path={path} handlePath={handlePathAdding} />
-            </div>
-            <div className='canvasButtons'>
-                <div className='canvasNaviButtonContainer' />
-                <div className='canvasButtonContainer'>
-                    <RoundButton onClick={handleRemoveLatest} backgroundColor={'var(--red)'}>
-                        Remove
-                    </RoundButton>
-                </div>
-                <div className='canvasButtonContainer'>
-                    <RoundButton onClick={() => setPath([])} backgroundColor={'var(--primary)'}>
-                        Keep
-                    </RoundButton>
-                </div>
-                <div className='canvasNaviButtonContainer' />
-            </div>
-        </div>
+            }
+            leftButton={null}
+            rightButton={null}
+            middleButtons={[
+                <RoundButton onClick={handleRemoveLatest} backgroundColor={'var(--red)'}>
+                    Remove
+                </RoundButton>,
+                <RoundButton onClick={() => setPath([])} backgroundColor={'var(--primary)'}>
+                    Keep
+                </RoundButton>
+            ]}
+        />
     );
 }
 
@@ -112,42 +109,31 @@ function BrowsePage({ editMode = false }) {
     }
 
     return (
-        <div className='canvasView'>
-            <div className='canvasContainer'>
-                {seqAvailable(chosenSeqClsName, seqIndex) &&
-                    <ViewingCanvas path={path} />
-                }
-            </div>
-            <div className='canvasButtons'>
-                <div className='canvasNaviButtonContainer'>
-                    {(seqIndex > 0 && seqAvailable(chosenSeqClsName, seqIndex)) &&
-                        <LeftArrowButton onClick={() => setSeqIndex(seqIndex - 1)} />
-                    }
-                </div>
-                {(editMode && seqAvailable(chosenSeqClsName, seqIndex)) &&
-                    <>
-                        <div className='canvasButtonContainer'>
-                            <RoundButton onClick={onDelete} backgroundColor={'var(--red)'}>
-                                Remove
-                            </RoundButton>
-                        </div>
-                        <div className='canvasButtonContainer'>
-                            <RoundButton
-                                onClick={() => (seqIndex + 1 < getSequenceCount(chosenSeqClsName) ? setSeqIndex(seqIndex + 1) : {})}
-                                backgroundColor={'var(--primary)'}
-                            >
-                                Keep
-                            </RoundButton>
-                        </div>
-                    </>
-                }
-                <div className='canvasNaviButtonContainer'>
-                    {seqAvailable(chosenSeqClsName, seqIndex + 1) &&
-                        <RightArrowButton onClick={() => setSeqIndex(seqIndex + 1)} />
-                    }
-                </div>
-            </div>
-        </div>
+        <CanvasMenu
+            canvas={seqAvailable(chosenSeqClsName, seqIndex) &&
+                <ViewingCanvas path={path} />
+            }
+            leftButton={(seqIndex > 0 && seqAvailable(chosenSeqClsName, seqIndex)) &&
+                <LeftArrowButton onClick={() => setSeqIndex(seqIndex - 1)} />
+            }
+            rightButton={seqAvailable(chosenSeqClsName, seqIndex + 1) &&
+                <RightArrowButton onClick={() => setSeqIndex(seqIndex + 1)} />
+            }
+            middleButtons={
+                (editMode && seqAvailable(chosenSeqClsName, seqIndex)) ? 
+                [
+                    <RoundButton onClick={onDelete} backgroundColor={'var(--red)'}>
+                        Remove
+                    </RoundButton>,
+                    <RoundButton
+                        onClick={() => (seqIndex + 1 < getSequenceCount(chosenSeqClsName) ? setSeqIndex(seqIndex + 1) : {})}
+                        backgroundColor={'var(--primary)'}
+                    >
+                        Keep
+                    </RoundButton>
+                ] : []
+            }
+        />
     );
 }
 

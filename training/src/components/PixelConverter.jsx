@@ -14,6 +14,7 @@ function PixelConverter({ setDimensions, children }) {
         }
     }
 
+    // listen to resize
     useEffect(() => {
         computeSize();
         window.addEventListener('resize', computeSize);

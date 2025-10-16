@@ -19,7 +19,7 @@ function Header() {
     }
 
     const onDownload = () => {
-        const json = JSON.stringify(data, null, 2);
+        const json = JSON.stringify(data, null, 2); // 2 space indentation
         const file = new File([json], "project.json", { type: 'application/json' })
         saveAs(file);
     }

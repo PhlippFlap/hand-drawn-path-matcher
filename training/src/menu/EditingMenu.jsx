@@ -29,7 +29,7 @@ function EditingMenu() {
     }
 
     return (
-        <div className="menu">
+        <div className="editingMenu">
             <RoundButton
                 backgroundColor={chosenSeqClsName === "Negatives" ? 'var(--editmode-primary)' : 'var(--editmode-primary-dark)'}
                 onClick={() => onSelect('Negatives')}

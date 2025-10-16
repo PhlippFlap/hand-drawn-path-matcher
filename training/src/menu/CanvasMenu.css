@@ -1,0 +1,35 @@
+.canvasMenu {
+    width: calc(100vh - var(--header-height) - 12%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+
+    .canvasContainer {
+        aspect-ratio: 1 / 1; 
+        width: 100%;
+        background-color: black;
+        box-sizing: border-box;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .canvasButtons {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        column-gap: 1rem;
+
+        .canvasButtonContainer {
+            flex-grow: 1;
+            flex-basis: 0;
+        }
+
+        .canvasNaviButtonContainer {
+            flex-basis: 2.5rem;
+            flex-grow: 0;
+        }
+    }
+}
