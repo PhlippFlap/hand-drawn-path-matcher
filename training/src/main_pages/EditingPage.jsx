@@ -110,8 +110,9 @@ function BrowsePage({ editMode = false }) {
 
     return (
         <CanvasMenu
-            canvas={seqAvailable(chosenSeqClsName, seqIndex) &&
-                <ViewingCanvas path={path} />
+            canvas={(seqAvailable(chosenSeqClsName, seqIndex)) ? 
+                <ViewingCanvas path={path} /> 
+                : <p>There is nothing here jet</p>
             }
             leftButton={(seqIndex > 0 && seqAvailable(chosenSeqClsName, seqIndex)) &&
                 <LeftArrowButton onClick={() => setSeqIndex(seqIndex - 1)} />
@@ -137,13 +138,10 @@ function BrowsePage({ editMode = false }) {
     );
 }
 
-function EditingPageNonEmpty({ chosenClsName }) {
+function EditingPageNonEmpty() {
     // possible states: menu, browse, edit, add
-    const [mode, setMode] = useState('menu');
-
-    useEffect(() => {
-        setMode('menu');
-    }, [chosenClsName])
+    const mode = useUiStore((state) => state.editingPageMode);
+    const setMode = useUiStore((state) => state.setEditingPageMode);
 
     return (
         <>
@@ -169,14 +167,14 @@ function EditingPageNonEmpty({ chosenClsName }) {
 }
 
 function EditingPage() {
-    const chosenClsName = useUiStore((state) => state.chosenSeqClassName);
+    const classChosen = useUiStore((state) => state.chosenSeqClassName != null);
     return (
         <>
-            {chosenClsName == null &&
+            {!classChosen &&
                 <TutorialPage />
             }
-            {chosenClsName != null &&
-                <EditingPageNonEmpty chosenClsName={chosenClsName} />
+            {classChosen &&
+                <EditingPageNonEmpty />
             }
         </>
     );
