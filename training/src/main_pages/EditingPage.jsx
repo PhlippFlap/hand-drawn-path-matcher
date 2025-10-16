@@ -1,5 +1,5 @@
 import './EditingPage.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import RoundButton from '../components/buttons/RoundButton';
 import BackButton from '../components/buttons/BackButton';
 import LeftArrowButton from '../components/buttons/LeftArrowButton';
@@ -88,13 +88,13 @@ function BrowsePage({ editMode = false }) {
     const removeSequence = useDataStore((state) => state.removeSequence);
     const [path, setPath] = useState(getSequence(chosenSeqClsName, seqIndex));
 
-    const updatePath = () => {
+    const updatePath = useCallback(() => {
         setPath(getSequence(chosenSeqClsName, seqIndex));
-    }
+    }, [chosenSeqClsName, seqIndex, getSequence]);
 
     useEffect(() => {
         updatePath();
-    }, [seqIndex, chosenSeqClsName]);
+    }, [updatePath]);
 
     const seqAvailable = (seqClsName, index) => {
         return getSequence(seqClsName, index) !== undefined;

@@ -5,7 +5,7 @@ import FileUploadArea from '../components/FileUploadArea';
 function InitialPage({ onProjectInput }) {
     let fileReader;
 
-     const handleFileRead = (e) => {
+     const handleFileRead = () => {
         const content = fileReader.result;
         const project = JSON.parse(content);
         onProjectInput(project);

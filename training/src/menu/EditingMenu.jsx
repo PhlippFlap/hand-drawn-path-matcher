@@ -3,7 +3,6 @@ import { useDataStore } from "../stores/dataStore";
 import { useUiStore } from '../stores/uiStore';
 import { useShallow } from 'zustand/react/shallow'
 import EditableButton from '../components/buttons/EditableButton';
-import { usePopup } from '../components/PopupProvider';
 import EditPathClassPopup from '../popups/EditPathClassPopup';
 import PlusButton from '../components/buttons/PlusButton';
 import RoundButton from '../components/buttons/RoundButton';
@@ -13,7 +12,7 @@ function EditingMenu() {
     const seqClasses = useDataStore(useShallow((state) => state.sequenceClasses));
     const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
     const setChosenSeqClsName = useUiStore((state) => state.setChosenSeqClassName);
-    const { popup, setPopup } = usePopup();
+    const setPopup = useUiStore((state) => state.setPopup);
 
     const onSelect = (seqClsName) => {
         setChosenSeqClsName(seqClsName);

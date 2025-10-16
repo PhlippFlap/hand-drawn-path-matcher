@@ -1,15 +1,10 @@
-import { useState } from 'react'
 import './App.css'
 import Header from './Header';
 import InitialPage from './main_pages/InitialPage';
-import PopupProvider, { usePopup } from './components/PopupProvider';
 import { useUiStore } from './stores/uiStore';
 import EditingMenu from './menu/EditingMenu';
 import EditingPage from './main_pages/EditingPage';
 import { useDataStore } from './stores/dataStore';
-
-function download() {
-}
 
 function LeftMenu({ children }) {
     return (
@@ -27,11 +22,11 @@ function MainWindow({ children }) {
     );
 }
 
-function Content() {
+function App() {
     const mode = useUiStore((state) => state.mode);
     const setMode = useUiStore((state) => state.setMode);
     const loadData = useDataStore((state) => state.load);
-    const { popup, setPopup } = usePopup();
+    const popup = useUiStore((state) => state.popup);
 
     const onProjectInput = (project) => {
         loadData(project);
@@ -59,14 +54,6 @@ function Content() {
             }
         </>
     );
-}
-
-function App() {
-    return (
-        <PopupProvider>
-            <Content />
-        </PopupProvider>
-    )
 }
 
 export default App

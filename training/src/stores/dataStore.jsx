@@ -34,7 +34,7 @@ export const useDataStore = create((set, get) => ({
     },
     // replace everything with newState (except actions)
     load: (newState) => {
-        set((state) => (
+        set(() => (
             { sequenceClasses: newState.sequenceClasses }
         ));
     },

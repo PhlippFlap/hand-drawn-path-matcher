@@ -1,15 +1,15 @@
 import './FileUploadArea.css';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 
 // Accepts 1 JSON file
 function FileUploadArea({ onFileUpload }) {
 
-    // when a file is dropped this is called twice for some reason, keep in mind
-    const onFileInput = (file) => {
+    // when a file is dropped this is called twice for some reason (strict mode), keep in mind
+    const onFileInput = useCallback((file) => {
         if (file != null) {
             onFileUpload(file);
         }
-    };
+    }, [onFileUpload]);
 
     const dropContainerRef = useRef(null);
 

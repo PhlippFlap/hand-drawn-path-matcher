@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Stage, Layer, Line, Text } from 'react-konva';
+import { useState } from 'react';
+import { Stage, Layer, Line } from 'react-konva';
 import PixelConverter from './PixelConverter';
 
 function ViewingCanvas({ 

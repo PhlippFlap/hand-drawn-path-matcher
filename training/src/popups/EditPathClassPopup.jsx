@@ -1,7 +1,6 @@
 import './EditPathClassPopup.css';
 import RoundButton from "../components/buttons/RoundButton";
 import Popup from '../components/Popup';
-import { usePopup } from '../components/PopupProvider';
 import { useUiStore } from '../stores/uiStore';
 import { useDataStore } from '../stores/dataStore';
 import { useRef, useState } from 'react';
@@ -9,7 +8,7 @@ import { useRef, useState } from 'react';
 function EditPathClassPopup({
     type // either 'new' or 'edit'
 }) {
-    const { popup, setPopup } = usePopup();
+    const setPopup = useUiStore((state) => state.setPopup);
     const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
     const getSymbolName = useDataStore((state) => state.getSymbolName);
     const setChosenSeqClsName = useUiStore((state) => state.setChosenSeqClassName);
