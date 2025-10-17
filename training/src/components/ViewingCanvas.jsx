@@ -18,7 +18,10 @@ function ViewingCanvas({
             >
                 <Layer>
                     <Line
-                        points={path}
+                        points={path.map((point, i) => i % 2 === 0 ? 
+                            (point + 1) / 2 * dimensions.width :
+                            (point + 1) / 2 * dimensions.height
+                        )}
                         stroke="white"
                         strokeWidth={1}
                     />

@@ -18,10 +18,18 @@ function DrawingCanvas({
 
     const isDrawing = useRef(false);
 
+    const normX = (x) => {
+        return Math.round((x / dimensions.width * 2 - 1) * 1000) / 1000;
+    }
+    const normY = (y) => {
+        return Math.round((y / dimensions.height * 2 - 1) * 1000) / 1000;
+    }
+
     const handleMouseDown = (e) => {
         isDrawing.current = true;
         const pos = e.target.getStage().getPointerPosition();
-        setLocalPath([pos.x, pos.y]);
+        // convert pixel coordinates to normalized coordinates between -1 and 1
+        setLocalPath([normX(pos.x), normY(pos.y)]);
     };
 
     const handleMouseMove = (e) => {
@@ -33,7 +41,8 @@ function DrawingCanvas({
         const point = stage.getPointerPosition();
 
         // add point
-        setLocalPath(localPath.concat([point.x, point.y]));
+        // convert pixel coordinates to normalized coordinates between -1 and 1
+        setLocalPath(localPath.concat(normX(point.x), normY(point.y)));
     };
 
     const handleMouseUp = () => {
@@ -55,12 +64,13 @@ function DrawingCanvas({
             >
                 <Layer>
                     <Line
-                        points={localPath}
+                        // This could be a reason for visual delay when drawing
+                        points={localPath.map((point, i) => i % 2 === 0 ? 
+                            (point + 1) / 2 * dimensions.width :
+                            (point + 1) / 2 * dimensions.height
+                        )}
                         stroke="white"
                         strokeWidth={1}
-                        //tension={0.5}
-                        // lineCap="round"
-                        // lineJoin="round"
                     />
                 </Layer>
             </Stage>
