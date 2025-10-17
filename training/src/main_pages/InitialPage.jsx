@@ -1,11 +1,12 @@
 import './InitialPage.css';
 import RoundButton from '../components/buttons/RoundButton';
 import FileUploadArea from '../components/FileUploadArea';
+import * as defaultProject from '../default_project.json';
 
 function InitialPage({ onProjectInput }) {
     let fileReader;
 
-     const handleFileRead = () => {
+    const handleFileRead = () => {
         const content = fileReader.result;
         const project = JSON.parse(content);
         onProjectInput(project);
@@ -31,8 +32,20 @@ function InitialPage({ onProjectInput }) {
         }
     };
 
+    const onLoadDefault = () => {
+        onProjectInput(defaultProject);
+    }
+
     const onCreateNew = () => {
-        const emptyProject = {};
+        const emptyProject = {
+            sequenceClasses: [
+                {
+                    name: "Negatives",
+                    symbolName: "",
+                    sequences: []
+                }
+            ]
+        }
         onProjectInput(emptyProject);
     }
 
@@ -42,9 +55,14 @@ function InitialPage({ onProjectInput }) {
                 <FileUploadArea onFileUpload={onFileUpload} />
             </div>
             <p>or</p>
-            <div className="createNewContainer">
+            <div className="initPageButtonContainer">
                 <RoundButton onClick={onCreateNew} backgroundColor='var(--primary)'>
-                    Create New
+                    Create new empty project
+                </RoundButton>
+            </div>
+            <div className="initPageButtonContainer">
+                <RoundButton onClick={onLoadDefault} backgroundColor='var(--primary)'>
+                    Load default project
                 </RoundButton>
             </div>
         </div>

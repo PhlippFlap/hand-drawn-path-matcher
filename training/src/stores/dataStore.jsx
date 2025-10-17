@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 export const useDataStore = create((set, get) => ({
+    // this is just here for reference and will be overwritten anyway when loading a project
     sequenceClasses: [
         {
             name: "Negatives",

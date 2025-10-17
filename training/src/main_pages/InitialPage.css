@@ -13,8 +13,8 @@
         height: 40%;
     }
 
-    .createNewContainer {
-        width: 20%;
+    .initPageButtonContainer {
+        width: 30%;
         height: fit-content;
     }
 }
