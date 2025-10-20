@@ -3,10 +3,16 @@ import py5
 from sequence import Sequence
 from sequence_data import SequenceData
 from sequence_class import SequenceClass
+from data_import import load_from_json
+from algorithm2 import StrongLearner
 
 points: list[float] = []
 sequenceData: SequenceData | None = None
 NUM_POINTS = 20
+classes: SequenceClass = load_from_json()
+strong_learner = StrongLearner()
+strong_learner.train(classes[1].sequences, classes[0].sequences)
+strong_learner.print_info()
 
 def setup():
     py5.size(500, 500)
@@ -50,6 +56,8 @@ def mouse_released():
         sequence.equi_space_out(NUM_POINTS)
         sequence.norm()
         sequenceData = SequenceData(sequence)
+        # evaluate sequence
+        print(f"Sequence is evaluated as: {strong_learner.evaluate(sequenceData)}")
 
     points.clear()
 

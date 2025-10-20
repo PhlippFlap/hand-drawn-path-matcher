@@ -118,3 +118,7 @@ class Sequence:
     def decimate(self, target_point_count: int):
         while len(self.points) > target_point_count:
             self.decimation_step()
+
+    def normalize(self, target_point_count: int):
+        self.equi_space_out(target_point_count)
+        self.norm()

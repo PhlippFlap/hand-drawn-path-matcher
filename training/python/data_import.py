@@ -18,7 +18,7 @@ def load_from_json():
                     # convert to sequence
                     seq = Sequence.from_float_list(s)
                     # normalize
-                    seq.norm()
+                    seq.normalize(20) # todo use constant and rename norm()
                     # convert to SequenceData
                     sequences.append(SequenceData(seq))
                 classes.append(SequenceClass(name, symbolName, sequences))
