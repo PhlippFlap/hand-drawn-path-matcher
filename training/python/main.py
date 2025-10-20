@@ -2,15 +2,9 @@ import numpy as np
 import py5
 import math
 
-def transformed_point(point, offset_x, offset_y, scale_x, scale_y):
-    x, y = point
-    x = offset_x + scale_x * x
-    y = offset_y + scale_y * y
-    return x, y
-
 class Sequence:
-    def __init__(self, points):
-        self.points: list[tuple[float, float]] = points
+    def __init__(self, points: np.ndarray):
+        self.points: list[np.ndarray] = points
 
     def copy(self):
         return Sequence(self.points[:])
@@ -19,84 +13,68 @@ class Sequence:
         py5.stroke(255)
         py5.fill(150)
         for i in range(len(self.points) - 1):
-            cx, cy = self.points[i]
-            nx, ny = self.points[i + 1]
-            py5.line(cx, cy, nx, ny)
-        for x, y in self.points:
-            py5.ellipse(x, y, 5, 5)
+            c = self.points[i]
+            n = self.points[i + 1]
+            py5.line(c[0], c[1], n[0], n[1])
+        for c in self.points:
+            py5.ellipse(c[0], c[1], 5, 5)
 
     def show_transformed(self, offset_x, offset_y, width, height):
         py5.stroke(255)
         py5.fill(150)
-        offset_x = offset_x + width / 2
-        offset_y = offset_y + height / 2
-        scale_x = width * 1
-        scale_y = height * 1
+        offset = np.array([offset_x + width / 2, offset_y + height / 2])
+        scaling = np.array([width, height])
         for i in range(len(self.points) - 1):
-            cx, cy = transformed_point(self.points[i], offset_x, offset_y, scale_x, scale_y)
-            nx, ny = transformed_point(self.points[i + 1], offset_x, offset_y, scale_x, scale_y)
-            py5.line(cx, cy, nx, ny)
-        for x, y in self.points:
-            x, y = transformed_point((x, y), offset_x, offset_y, scale_x, scale_y)
-            py5.ellipse(x, y, 2, 2)
+            c = self.points[i] * scaling + offset
+            n = self.points[i+1] * scaling + offset
+            py5.line(c[0], c[1], n[0], n[1])
+        for p in self.points:
+            c = p * scaling + offset
+            py5.ellipse(c[0], c[1], 2, 2)
 
-    def center_of_mass(self) -> tuple[float, float]:
-        cx = 0
-        cy = 0
-        for (x, y) in self.points:
-            cx += x
-            cy += y
-        cx /= len(self.points)
-        cy /= len(self.points)
-        return cx, cy
+    def center_of_mass(self) -> np.ndarray:
+        c = np.zeros(2)
+        for p in self.points:
+            c += p
+        return c / len(self.points)
 
     def variance(self) -> float:
         variance = 0
-        for (x, y) in self.points:
-            variance += x * x + y * y
+        for p in self.points:
+            variance += np.dot(p,p)
         return math.sqrt(variance)
 
     def norm(self):
-        cx, cy = self.center_of_mass()
-        for i, (x, y) in enumerate(self.points):
-            x -= cx
-            y -= cy
-            self.points[int(i)] = (x, y)
-        # v = self.variance()
-        v = self.length()
-        for i, (x, y) in enumerate(self.points):
-            x /= v
-            y /= v
-            self.points[int(i)] = (x, y)
-
+        c = self.center_of_mass()
+        l = self.length()
+        self.points = list(map(lambda p: (p - c) / l, self.points))
+            
     def length(self):
         length = 0
         for i in range(1, len(self.points)):
-            x1, y1 = self.points[i - 1]
-            x2, y2 = self.points[i]
-            dx = x1 - x2
-            dy = y1 - y2
-            length += math.sqrt(dx * dx + dy * dy)
+            prev = self.points[i - 1]
+            cur = self.points[i]
+            length += np.linalg.norm(cur - prev)
         return length
 
     def traverse(self, start_point_index: int, amount: float):
         next_i = start_point_index + 1
         if next_i < len(self.points):
-            cx, cy = self.points[next_i - 1]
-            nx, ny = self.points[next_i]
-            dx = cx - nx
-            dy = cy - ny
-            segment_length = math.sqrt(dx * dx + dy * dy)
+            c = self.points[next_i - 1]
+            n = self.points[next_i]
+            segment_length = np.linalg.norm(n - c)
             if segment_length == 0:
                 return self.traverse(next_i, amount)
             if segment_length >= amount:
                 mixing = amount / segment_length
-                return nx * mixing + cx * (1 - mixing), ny * mixing + cy * (1 - mixing)
+                # print(f"mixing: {mixing} c: {c} n: {n} result: {mixing * c + (1 - mixing) * n}")
+                return mixing * n + (1 - mixing) * c
             else:
                 return self.traverse(next_i, amount - segment_length)
         else:
             return None
 
+    # todo can be optimized
     def equi_space_out(self, target_point_count: int):
         length = self.length()
         new_points = []
@@ -115,19 +93,15 @@ class Sequence:
         min_dist = 100000
         best_i = 1
         for i in range(1, len(self.points) - 1):
-            last_x, last_y = self.points[i-1]
-            next_x, next_y = self.points[i+1]
-            cur_x, cur_y = self.points[i]
-            dx = next_x - last_x
-            dy = next_y - last_y
-            dl = math.sqrt(dx*dx + dy*dy)
-            dx /= dl
-            dy /= dl
-            to_cur_x = cur_x - last_x
-            to_cur_y = cur_y - last_y
-            d = abs(dx * to_cur_y - dy * to_cur_x)
-            if d < min_dist:
-                min_dist = d
+            prev = self.points[i-1]
+            cur = self.points[i]
+            nex = self.points[i+1]
+            to_next = nex - cur
+            to_next /= np.linalg.norm(to_next)
+            to_cur = cur - prev
+            distance = abs(to_next[0] * to_cur[1] - to_next[1] * to_cur[0])
+            if distance < min_dist:
+                min_dist = distance
                 best_i = i
         self.points.pop(best_i)
 
@@ -182,21 +156,21 @@ class WeakLearner:
         self.b: float = 0
         self.bias: float = 0
 
-    def _extract_vector(self, sequence: SequenceData):
+    def train(self, positive_sequences: list[SequenceData], negative_sequences: list[SequenceData]):
         lvl = self.feature.decimation_level
         start = self.feature.start_index
         end = self.feature.end_index
-        (sx, sy) = sequence.decimations[lvl][start] # start point
-        (ex, ey) = sequence.decimations[lvl][end] # end point
-        return (ex - sx, ey - sy) # direction from start to end
 
-    def train(self, positive_sequences: list[SequenceData], negative_sequences: list[SequenceData]):
+        def extract_vectors(sequences: list[SequenceData]):
+            pass # todo
+
         # compute vectors of positive and negative sequences defined by feature
         positives = positive_sequences.map(lambda s: self._extract_vector(s))
         negatives = negative_sequences.map(lambda s: self._extract_vector(s))
 
         # compute (vx, vy)
-        # This is chosen to be the normalized vector that maximizes sum_{p: positives} <p, v> = sum_{p: positives} p.x * vx + p.y * vy
+        # This is chosen to be the normalized vector that maximizes sum_{p: positives} <norm(p), v> = sum_{p: positives} p.x * vx + p.y * vy
+        # This equals 1/|{p:positives}| * sum_{p: positives} norm(p).
         
         # compute l
         # l is chosen to be the length that minimizes the squared differences of it to all positive points.
@@ -239,7 +213,7 @@ def draw():
 
     # draw sequence
     if (sequenceData != None):
-        sequenceData.decimations[20].show_transformed(0, 0, py5.width, py5.height)
+        sequenceData.decimations[5].show_transformed(0, 0, py5.width, py5.height)
 
 
 def mouse_pressed():
@@ -247,18 +221,18 @@ def mouse_pressed():
     sequenceData = None
 
 def mouse_released():
-    # convert list of floats to list of points
+    # convert list of floats to list of 2 entry numpy arrays
     converted = []
     for i in range(0, len(points) - 2, 2):
-        converted.append((points[i], points[i+1]))
+        converted.append(np.array([points[i], points[i+1]]))
 
     # create sequence data
     global sequenceData
     sequence = Sequence(converted)
-    sequence.equi_space_out(NUM_POINTS)
-    sequence.norm()
-    print(sequence.points)
-    sequenceData = SequenceData(sequence)
+    if sequence.length() >= 1: # avoid devision by 0
+        sequence.equi_space_out(NUM_POINTS)
+        sequence.norm()
+        sequenceData = SequenceData(sequence)
 
     points.clear()
 
