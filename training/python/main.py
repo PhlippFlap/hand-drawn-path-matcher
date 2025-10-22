@@ -3,15 +3,20 @@ import py5
 from sequence import Sequence
 from sequence_data import SequenceData
 from sequence_class import SequenceClass
-from data_import import load_from_json
+from data_io import load_from_json, store_to_json
 from algorithm2 import StrongLearner
+from global_vars import NUM_POINTS
+from algorithm2 import train_all
 
 points: list[float] = []
 sequenceData: SequenceData | None = None
-NUM_POINTS = 20
-classes: SequenceClass = load_from_json()
+classes: list[SequenceClass] = load_from_json()
+assert classes[0].className == "Negatives"
+train_all(classes[0], classes[1:])
+store_to_json(classes)
+
 strong_learner = StrongLearner()
-strong_learner.train(classes[1].sequences, classes[0].sequences)
+strong_learner.train(classes[1].prepared_sequences, classes[0].prepared_sequences)
 strong_learner.print_info()
 
 def setup():
@@ -53,9 +58,7 @@ def mouse_released():
     global sequenceData
     sequence = Sequence(converted)
     if sequence.length() >= 1: # avoid devision by 0
-        sequence.optimized_equi_space_out(NUM_POINTS)
-        sequence.norm()
-        sequenceData = SequenceData(sequence)
+        sequenceData = SequenceData(sequence, NUM_POINTS)
         # evaluate sequence
         print(f"Sequence is evaluated as: {strong_learner.evaluate(sequenceData)}")
 

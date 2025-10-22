@@ -1,4 +1,5 @@
 {
+  "targetPointCount": 20,
   "sequenceClasses": [
     {
       "name": "Negatives",
@@ -2832,6 +2833,26 @@
           0.583,
           0.235
         ]
+      ],
+      "weakLearners": [
+        {
+          "index": 0,
+          "decimation_level": 4,
+          "start_index": 0,
+          "end_index": 1,
+          "center_of_mass_x": 0.306165,
+          "center_of_mass_y": -3.7e-05,
+          "radius": 0.09269
+        },
+        {
+          "index": 1,
+          "decimation_level": 4,
+          "start_index": 0,
+          "end_index": 2,
+          "center_of_mass_x": 0.042683,
+          "center_of_mass_y": 0.263395,
+          "radius": 0.124797
+        }
       ]
     }
   ]

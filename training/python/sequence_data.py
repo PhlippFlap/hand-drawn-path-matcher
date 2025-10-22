@@ -4,8 +4,11 @@ from feature import Feature
 
 # stores the decimated versions of the (normalized) input sequence
 class SequenceData:
-    # sequence is expected to be normalized
-    def __init__(self, sequence: Sequence) -> None: 
+    
+    # consumes given sequences (changes it)
+    def __init__(self, sequence: Sequence, target_point_count: int) -> None: 
+        sequence.optimized_equi_space_out(target_point_count)
+        sequence.norm()
         seqLen = len(sequence.points)
         self.decimations: dict[int, Sequence] = {}
         self.decimations[seqLen] = sequence

@@ -3,7 +3,6 @@ from sequence import Sequence
 from sequence_data import SequenceData
 from sequence_class import SequenceClass
 from feature import Feature
-import math
 
 class WeakLearner: 
     def __init__(self, feature):
@@ -39,7 +38,7 @@ class WeakLearner:
 class StrongLearner:
 
     def __init__(self):
-        # list of weak learner. When evaluating these are tested.
+        # list of weak learner. When evaluating these are tested one by one.
         # when all tests pass, evaluation is yes
         self.weak_learners = []
 
@@ -94,3 +93,16 @@ class StrongLearner:
         for i, w in enumerate(self.weak_learners):
             f = w.feature
             print(f"Weak Learner {i}: Decimation Level: {f.decimation_level}, Start Index: {f.start_index}, End Index: {f.end_index}, Center of Mass: {w.center_of_mass}, Radius: {w.radius}")
+
+def train_all(negatives_seq_class, other_seq_classes: list[SequenceClass]):
+    for i in range(len(other_seq_classes)):
+        # train other_seq_classes[i]
+        negative_classes = [negatives_seq_class] + other_seq_classes[:i] + other_seq_classes[i+1:]
+        negative_sequences = sum(list(map(lambda c: c.prepared_sequences, negative_classes)), [])
+        seq_class = other_seq_classes[i]
+        print(f"Training class with name {seq_class.className} and symbol-name {seq_class.symbolName} ...")
+        strong_learner = StrongLearner()
+        strong_learner.train(seq_class.prepared_sequences, negative_sequences)
+        strong_learner.print_info()
+        seq_class.weak_learners = strong_learner.weak_learners
+    print("Training finished!")

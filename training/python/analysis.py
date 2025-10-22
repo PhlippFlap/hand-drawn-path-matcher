@@ -1,7 +1,7 @@
 from sequence_data import SequenceData
 from sequence_class import SequenceClass
 from sequence import Sequence
-from data_import import load_from_json
+from training.python.data_io import load_from_json
 import py5
 import numpy as np
 from feature import Feature
@@ -9,7 +9,7 @@ from feature import Feature
 classes = load_from_json()
 
 def show_vectors(seq_class: SequenceClass, feature: Feature):
-    for s in seq_class.sequences:
+    for s in seq_class.prepared_sequences:
         seq = s.decimations[feature.decimation_level]
         vec = seq.points[feature.end_index] - seq.points[feature.start_index]
         py5.ellipse(vec[0] * py5.width/2 + py5.width/2, vec[1] * py5.height/2 + py5.height/2, 2, 2)

@@ -15,6 +15,13 @@ class Sequence:
         for i in range(0, len(points) - 1, 2):
             converted.append(np.array([points[i], points[i+1]]))
         return Sequence(converted)
+    
+    def to_float_list(self) -> list[float]:
+        float_list = []
+        for p in self.points:
+            float_list.append(float(p[0]))
+            float_list.append(float(p[1]))
+        return float_list
 
     def copy(self):
         return Sequence(self.points[:])
@@ -143,7 +150,7 @@ class Sequence:
             cur = self.points[i]
             nex = self.points[i+1]
             to_next = nex - cur
-            to_next /= np.linalg.norm(to_next) # todo this normalization is not necessary since all segments have equal length
+            ## to_next /= np.linalg.norm(to_next) # this normalization is not necessary since all segments have equal length
             to_cur = cur - prev
             distance = abs(to_next[0] * to_cur[1] - to_next[1] * to_cur[0])
             if distance < min_dist:
@@ -154,11 +161,6 @@ class Sequence:
     def decimate(self, target_point_count: int):
         while len(self.points) > target_point_count:
             self.decimation_step()
-
-    def normalize(self, target_point_count: int):
-        # self.equi_space_out(target_point_count)
-        self.optimized_equi_space_out(target_point_count)
-        self.norm()
 
 # Sequence.from_float_list([0,0, 8,0, 10,0]).optimized_equi_space_out(5)
 # Sequence.from_float_list([0,0, 1,0, 1,0, 10,0]).optimized_equi_space_out(5)

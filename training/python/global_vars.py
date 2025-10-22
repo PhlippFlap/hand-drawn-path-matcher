@@ -1,0 +1,1 @@
+NUM_POINTS = 20 # might be overwritten when loading json
