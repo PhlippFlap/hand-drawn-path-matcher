@@ -1,0 +1,15 @@
+.loadingScreen {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gray-darker);
+    font-size: large;
+    color: var(--gray-light)
+}
