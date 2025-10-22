@@ -53,7 +53,7 @@ def mouse_released():
     global sequenceData
     sequence = Sequence(converted)
     if sequence.length() >= 1: # avoid devision by 0
-        sequence.equi_space_out(NUM_POINTS)
+        sequence.optimized_equi_space_out(NUM_POINTS)
         sequence.norm()
         sequenceData = SequenceData(sequence)
         # evaluate sequence

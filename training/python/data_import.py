@@ -36,4 +36,4 @@ def test():
     for c in classes:
         print(f"Class: {c.className}, Symbol: {c.symbolName}, Num Sequences: {len(c.sequences)}")
 
-test()
+# test()

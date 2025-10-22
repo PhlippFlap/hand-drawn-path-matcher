@@ -12,7 +12,7 @@ class Sequence:
         assert(len(points) % 2 == 0)
         # convert list of floats to list of 2 entry numpy arrays
         converted = []
-        for i in range(0, len(points) - 2, 2):
+        for i in range(0, len(points) - 1, 2):
             converted.append(np.array([points[i], points[i+1]]))
         return Sequence(converted)
 
@@ -84,7 +84,6 @@ class Sequence:
         else:
             return None
 
-    # todo can be optimized
     def equi_space_out(self, target_point_count: int):
         length = self.length()
         new_points = []
@@ -97,6 +96,43 @@ class Sequence:
         new_points.append(self.points[len(self.points) - 1])  # add last point
         self.points = new_points
 
+    # assumes that sequence has non-zero length
+    def optimized_equi_space_out(self, target_point_count: int):
+        length = self.length()
+        new_points = []
+        spacing = length / (target_point_count - 1)
+        cur_segment = 0
+        space_needed = spacing
+        cur_segment_progress = 0
+        new_points.append(self.points[0]) # append first point
+        run = True
+        while run:
+            c = self.points[cur_segment]
+            n = self.points[cur_segment + 1]
+            segment_length = np.linalg.norm(n - c)
+            if segment_length == 0:
+                cur_segment += 1
+                continue
+            if space_needed > segment_length - cur_segment_progress:
+                # not enough space in the current segment to place next point
+                space_needed -= segment_length - cur_segment_progress
+                cur_segment += 1
+                cur_segment_progress = 0
+                continue
+            while space_needed <= segment_length - cur_segment_progress:
+                # enough space in the current segment to place next point
+                cur_segment_progress += space_needed
+                mixing = cur_segment_progress / segment_length
+                new_points.append(mixing * n + (1 - mixing) * c) # place point
+                if len(new_points) == target_point_count - 1: 
+                    # this is the last point that should be placed like this
+                    run = False
+                    break
+                space_needed = spacing
+        new_points.append(self.points[len(self.points) - 1]) # append last point
+        self.points = new_points
+
+
     def decimation_step(self):
         if len(self.points) < 3:
             return
@@ -107,7 +143,7 @@ class Sequence:
             cur = self.points[i]
             nex = self.points[i+1]
             to_next = nex - cur
-            to_next /= np.linalg.norm(to_next)
+            to_next /= np.linalg.norm(to_next) # todo this normalization is not necessary since all segments have equal length
             to_cur = cur - prev
             distance = abs(to_next[0] * to_cur[1] - to_next[1] * to_cur[0])
             if distance < min_dist:
@@ -120,5 +156,9 @@ class Sequence:
             self.decimation_step()
 
     def normalize(self, target_point_count: int):
-        self.equi_space_out(target_point_count)
+        # self.equi_space_out(target_point_count)
+        self.optimized_equi_space_out(target_point_count)
         self.norm()
+
+# Sequence.from_float_list([0,0, 8,0, 10,0]).optimized_equi_space_out(5)
+# Sequence.from_float_list([0,0, 1,0, 1,0, 10,0]).optimized_equi_space_out(5)
