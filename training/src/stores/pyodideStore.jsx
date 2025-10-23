@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { useDataStore } from "./dataStore.jsx";
 import trainingScriptFile from '../scripts/training.txt';
+import evaluationScriptFile from '../scripts/evaluation.txt';
 
 export const usePyodideStore = create((set, get) => ({
     instance: null,
     status: 'idle', // idle, loading, ready, or running
     output: null,
     trainingScript: "",
+    evaluationScript: "",
 
     initialize: () => {
         if (get().status != 'idle') {
@@ -16,8 +18,9 @@ export const usePyodideStore = create((set, get) => ({
             { status: 'loading' }
         )) 
         const exec = async () => {
-            // Read training script as string
+            // Read training and evaluation scripts as strings
             const trainingScript = await fetch(trainingScriptFile).then(res => res.text());
+            const evaluationScript = await fetch(evaluationScriptFile).then(res => res.text());
             // ChatGPT solved this. Now the URL to the pyodide script is directly attached into the HTML script element.
             // There was an issue with bundlers trying to resolve @pyodide/pyodide from node_modules.
             // Dynamically load the official Pyodide CDN loader to avoid bundler resolution issues
@@ -67,6 +70,34 @@ export const usePyodideStore = create((set, get) => ({
                 { status: 'ready', output: result }
             ))
             onFinish();
+        };
+        exec(); // async call
+    },
+    executeEvaluationScript: (testSequence, onFinish) => {
+        if (get().instance == null) {
+            return; // instance (deliberately) not loaded
+        }
+        if (get().status !== 'ready') {
+            throw new Error('Pyodide instance not ready');
+        }
+        set(() => (
+            { status: 'running' }
+        ))
+        const exec = async () => {
+            // todo 
+            // const pyodide = get().instance;
+            // const filteredData = useDataStore.getEvalRelevantState();
+            // const jsonInputString = JSON.stringify(filteredData, null, 2);
+            // pyodide.globals.set("json_input_str", jsonInputString);
+            // await pyodide.runPythonAsync(get().evaluationScript);
+            // const resultString = pyodide.globals.get("json_output_str");
+            // if (resultString == undefined) {
+            //     console.error("Value of 'json_output_str' is undefined after running script with pyodide!")
+            // }
+            // set(() => (
+            //     { status: 'ready' }
+            // ))
+            // onFinish(resultString);
         };
         exec(); // async call
     },

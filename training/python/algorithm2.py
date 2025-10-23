@@ -39,7 +39,7 @@ class WeakLearner:
 class StrongLearner:
 
     def __init__(self):
-        # list of weak learner. When evaluating these are tested one by one.
+        # list of weak learners. When evaluating these are tested one by one.
         # when all tests pass, evaluation is yes
         self.weak_learners = []
 
