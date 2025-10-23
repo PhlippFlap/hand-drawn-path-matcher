@@ -3,6 +3,7 @@ import math
 import json
 
 NUM_POINTS = 20
+MAX_WEAK_LEARNER_COUNT = 10
 
 class Feature:
     def __init__(self, 
@@ -183,7 +184,7 @@ class StrongLearner:
     def train(self, positives: list[SequenceData], negatives: list[SequenceData]):
         point_count = max(positives[0].decimations.keys()) # all sequences have the same number of points
         left_negatives = negatives[:]
-        for i in range(10):
+        for i in range(MAX_WEAK_LEARNER_COUNT):
             # find best weak learner until no more negatives can be rules out but at most 10.
             # rate weak learners according to how many negatives they rule out of those who are left (while keeping all positives by design).
             best_weak_learner = None
@@ -251,6 +252,9 @@ def load_from_json(json_input_str) -> list[SequenceClass]:
     if "targetPointCount" in json_object: # defaults to 20 if not present
         global NUM_POINTS
         NUM_POINTS = json_object["targetPointCount"]
+    if "maxWeakLearnerCount" in json_object: # defaults to 10 if not present
+        global MAX_WEAK_LEARNER_COUNT
+        MAX_WEAK_LEARNER_COUNT = json_object["maxWeakLearnerCount"]
     classes_list: list = json_object["sequenceClasses"]
     classes: list[SequenceClass] = []
     for seq_class_dict in classes_list:

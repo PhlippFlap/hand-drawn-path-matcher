@@ -11,6 +11,9 @@ def load_from_json():
             if "targetPointCount" in json_object: # defaults to 20 if not present
                 global NUM_POINTS
                 NUM_POINTS = json_object["targetPointCount"]
+            if "maxWeakLearnerCount" in json_object: # defaults to 10 if not present
+                global MAX_WEAK_LEARNER_COUNT
+                MAX_WEAK_LEARNER_COUNT = json_object["maxWeakLearnerCount"]
             classes_list: list = json_object["sequenceClasses"]
             classes: list[SequenceClass] = []
             for seq_class_dict in classes_list:

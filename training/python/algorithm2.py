@@ -3,6 +3,7 @@ from sequence import Sequence
 from sequence_data import SequenceData
 from sequence_class import SequenceClass
 from feature import Feature
+from global_vars import MAX_WEAK_LEARNER_COUNT
 
 class WeakLearner: 
     def __init__(self, feature):
@@ -46,8 +47,8 @@ class StrongLearner:
     def train(self, positives: list[SequenceData], negatives: list[SequenceData]):
         point_count = max(positives[0].decimations.keys()) # all sequences have the same number of points
         left_negatives = negatives[:]
-        for i in range(10):
-            # find best weak learner until no more negatives can be rules out but at most 10.
+        for i in range(MAX_WEAK_LEARNER_COUNT):
+            # find best weak learner until no more negatives can be rules out but at most MAX_WEAK_LEARNER_COUNT.
             # rate weak learners according to how many negatives they rule out of those who are left (while keeping all positives by design).
             best_weak_learner = None
             most_negatives_ruled_out = 0

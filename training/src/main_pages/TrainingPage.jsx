@@ -17,10 +17,10 @@ function TrainAllButton() {
 
     const onTrain = () => {
         const onFinish = () => {
-            alert('Training Finished')
-            alert(JSON.stringify(getOutputJSON(), null, 2))
+            alert('Training Finished');
+            alert(JSON.stringify(getOutputJSON(), null, 2));
         }
-        executeTrainingScript(onFinish)
+        executeTrainingScript(onFinish);
     }
 
     return (
