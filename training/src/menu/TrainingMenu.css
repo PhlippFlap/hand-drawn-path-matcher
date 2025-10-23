@@ -19,19 +19,6 @@
     }
 }
 
-.trainingMenuButtonContent {
-    padding-left: 1rem;
-    text-align: left;
-}
-
-.trainingMenuSeqClassName {
-    
-}
-
-.trainingMenuSymbolName {
-    color: gray;
-}
-
 .trainingMenuSeparator {
     height: 0;
     width: 100%;

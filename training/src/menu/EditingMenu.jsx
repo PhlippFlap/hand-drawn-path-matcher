@@ -6,6 +6,7 @@ import EditableButton from '../components/buttons/EditableButton';
 import EditPathClassPopup from '../popups/EditPathClassPopup';
 import PlusButton from '../components/buttons/PlusButton';
 import RoundButton from '../components/buttons/RoundButton';
+import Spread from '../components/Spread';
 
 function EditingMenu() {
     // I'm not sure if useShallow works in this scenario
@@ -33,7 +34,12 @@ function EditingMenu() {
                 backgroundColor={chosenSeqClsName === "Negatives" ? 'var(--editmode-primary)' : 'var(--editmode-primary-dark)'}
                 onClick={() => onSelect('Negatives')}
             >
-                {'Negatives  [' + seqClasses.find((item) => item.name === 'Negatives').sequences.length + ']'}
+                <Spread>
+                    <span>Negatives</span>
+                    <span>
+                        {'[' + seqClasses.find((item) => item.name === 'Negatives').sequences.length + ']'}
+                    </span>
+                </Spread>
             </RoundButton>
             <div className='separator' />
             <ul>
@@ -44,14 +50,17 @@ function EditingMenu() {
                             onEdit={() => onEdit(item.name)}
                             onClick={() => onSelect(item.name)}
                         >
-                            <div className='buttonContent'>
-                                <span className='seqClassName'>
-                                    {item.name}
+                            <Spread rightPadding='0.3rem'>
+                                <span>
+                                    <span>{item.name}</span>
+                                    <span style={{ color: 'var(--gray-light)' }}>
+                                        {" | " + item.symbolName}
+                                    </span>
                                 </span>
-                                <span className='symbolName'>
-                                    {" | " + item.symbolName}
+                                <span>
+                                    {'[' + item.sequences.length + ']'}
                                 </span>
-                            </div>
+                            </Spread>
                         </EditableButton>
                     </li>
                 ))}

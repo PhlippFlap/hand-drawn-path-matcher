@@ -8,10 +8,11 @@ function SwitchButton({
     const handleToggle = () => {
         if (state === 'left') {
             setState('right');
+            onToggle('right');
         } else {
             setState('left');
+            onToggle('left');
         }
-        onToggle(state);
     }
     return (
         <div className="switchButton">

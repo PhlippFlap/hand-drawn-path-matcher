@@ -19,18 +19,6 @@
     }
 }
 
-.buttonContent {
-    padding-left: 1rem;
-    text-align: left;
-}
-
-.symbolName {
-    color: gray;
-}
-
-.seqClassName {
-}
-
 .separator {
     height: 0;
     width: 100%;

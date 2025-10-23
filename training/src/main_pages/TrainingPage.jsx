@@ -10,85 +10,34 @@ import { useDataStore } from '../stores/dataStore'
 import ViewingCanvas from '../components/ViewingCanvas';
 import CanvasMenu from '../menu/CanvasMenu';
 import { usePyodideStore } from '../stores/pyodideStore';
+import Spread from '../components/Spread';
+
+function TrainAllButton() {
+    const executeTrainingScript = usePyodideStore((state) => state.executeTrainingScript);
+    return (
+        <RoundButton
+            onClick={() => executeTrainingScript()}
+            backgroundColor={'var(--trainmode-primary-dark)'}
+        >
+            Train All
+        </RoundButton>
+    );
+}
 
 function TutorialPage() {
     return (
         <div className='trainingPageTutorial'>
-            <p>
-                Choose a sequence class
-            </p>
+            <div style={{ width: '10rem' }}>
+                <TrainAllButton />
+            </div>
         </div>
     );
 }
 
-function Menu({ setMode }) {
-    const executeTrainingScript = usePyodideStore((state) => state.executeTrainingScript);
-
-    return (
-        <div className='trainingPageMenu'>
-            <RoundButton
-                onClick={() => setMode('fineTune')}
-                backgroundColor={'var(--editmode-primary-dark)'}
-            >
-                Finetune
-            </RoundButton>
-            <RoundButton
-                onClick={() => executeTrainingScript()}
-                backgroundColor={'var(--editmode-primary-dark)'}
-            >
-                Train
-            </RoundButton>
-        </div>
-    );
-}
-
-function AddPage() {
-    const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
-    const removeLastSequence = useDataStore((state) => state.removeLastSequence);
-    const addSequence = useDataStore((state) => state.addSequence);
-    const [path, setPath] = useState([]);
-
-    const handlePathAdding = (path) => {
-        setPath(path);
-        addSequence(chosenSeqClsName, path);
-    }
-
-    const handleRemoveLatest = () => {
-        removeLastSequence(chosenSeqClsName);
-        setPath([]);
-    }
-
-    return (
-        <CanvasMenu
-            canvas={
-                <DrawingCanvas path={path} handlePath={handlePathAdding} />
-            }
-            leftButton={null}
-            rightButton={null}
-            middleButtons={[
-                <RoundButton onClick={handleRemoveLatest} backgroundColor={'var(--red)'}>
-                    Remove
-                </RoundButton>,
-                <RoundButton onClick={() => setPath([])} backgroundColor={'var(--primary)'}>
-                    Keep
-                </RoundButton>
-            ]}
-        />
-    );
-}
-
-function FineTunePage() {
-    return (
-        <></>
-    );
-}
-
-function BrowsePage({ editMode = false }) {
+function BrowseFalsePositivesPage() {
     const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
     const [seqIndex, setSeqIndex] = useState(0);
-    const getSequenceCount = useDataStore((state) => state.getSequenceCount);
-    const getSequence = useDataStore((state) => state.getSequence);
-    const removeSequence = useDataStore((state) => state.removeSequence);
+    const getSequence = useDataStore((state) => state.getFalsePositiveSequence);
     const [path, setPath] = useState(getSequence(chosenSeqClsName, seqIndex));
 
     const updatePath = useCallback(() => {
@@ -103,19 +52,11 @@ function BrowsePage({ editMode = false }) {
         return getSequence(seqClsName, index) !== undefined;
     }
 
-    const onDelete = () => {
-        removeSequence(chosenSeqClsName, seqIndex);
-        if (seqIndex >= getSequenceCount(chosenSeqClsName)) {
-            setSeqIndex(getSequenceCount(chosenSeqClsName) - 1);
-        }
-        updatePath();
-    }
-
     return (
         <CanvasMenu
-            canvas={(seqAvailable(chosenSeqClsName, seqIndex)) ? 
-                <ViewingCanvas path={path} /> 
-                : <p>There is nothing here jet</p>
+            canvas={(seqAvailable(chosenSeqClsName, seqIndex)) ?
+                <ViewingCanvas path={path} />
+                : <p>There is nothing here</p>
             }
             leftButton={(seqIndex > 0 && seqAvailable(chosenSeqClsName, seqIndex)) &&
                 <LeftArrowButton onClick={() => setSeqIndex(seqIndex - 1)} />
@@ -123,21 +64,83 @@ function BrowsePage({ editMode = false }) {
             rightButton={seqAvailable(chosenSeqClsName, seqIndex + 1) &&
                 <RightArrowButton onClick={() => setSeqIndex(seqIndex + 1)} />
             }
-            middleButtons={
-                (editMode && seqAvailable(chosenSeqClsName, seqIndex)) ? 
-                [
-                    <RoundButton onClick={onDelete} backgroundColor={'var(--red)'}>
-                        Remove
-                    </RoundButton>,
-                    <RoundButton
-                        onClick={() => (seqIndex + 1 < getSequenceCount(chosenSeqClsName) ? setSeqIndex(seqIndex + 1) : {})}
-                        backgroundColor={'var(--primary)'}
-                    >
-                        Keep
-                    </RoundButton>
-                ] : []
-            }
+            middleButtons={null}
         />
+    );
+}
+
+function FineTunePage() {
+    const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
+    const [path, setPath] = useState([]);
+    const [evaluation, setEvaluation] = useState("");
+
+    const handlePathAdding = (path) => {
+        setPath(path);
+        // todo evaluate sequence
+    }
+
+    const onDiscard = () => {
+        setPath([]);
+        setEvaluation("");
+    }
+
+    return (
+        <div className='finetune'>
+            <div className='finetuneCanvasContainer'>
+                <DrawingCanvas path={path} handlePath={handlePathAdding} onStartDrawing={() => setEvaluation("")} />
+            </div>
+            <div className='finetuneMenu'>
+                <p>
+                    {'Evaluated class: ' + evaluation}
+                </p>
+                <RoundButton
+                    onClick={() => onDiscard()}
+                    backgroundColor={'var(--trainmode-primary-dark)'}
+                >
+                    Discard
+                </RoundButton>
+                <RoundButton
+                    onClick={() => alert('Add as negative')}
+                    backgroundColor={'var(--trainmode-primary-dark)'}
+                >
+                    Add as Negative
+                </RoundButton>
+                <RoundButton
+                    onClick={() => alert('Add as positive')}
+                    backgroundColor={'var(--trainmode-primary-dark)'}
+                >
+                    Add as Positive
+                </RoundButton>
+                <div className='trainingPageSeparator' />
+                <TrainAllButton />
+            </div>
+        </div>
+    );
+}
+
+function Menu({ setMode }) {
+    const negativesChosen = useUiStore((state) => state.chosenSeqClassName === 'Negatives')
+
+    return (
+        <div className='trainingPageMenu'>
+            {!negativesChosen &&
+                <>
+                    <RoundButton
+                        onClick={() => setMode('browseFalsePositives')}
+                        backgroundColor={'var(--trainmode-primary-dark)'}
+                    >
+                        Browse false positives
+                    </RoundButton>
+                    <RoundButton
+                        onClick={() => setMode('fineTune')}
+                        backgroundColor={'var(--trainmode-primary-dark)'}
+                    >
+                        Finetune
+                    </RoundButton>
+                </>
+            }
+            <TrainAllButton />
+        </div>
     );
 }
 
@@ -157,6 +160,9 @@ function TrainingPageNonEmpty() {
                     {mode === 'fineTune' &&
                         <FineTunePage />
                     }
+                    {mode === 'browseFalsePositives' &&
+                        <BrowseFalsePositivesPage />
+                    }
                 </>
             }
         </>
@@ -165,12 +171,14 @@ function TrainingPageNonEmpty() {
 
 function TrainingPage() {
     const classChosen = useUiStore((state) => state.chosenSeqClassName != null);
+    const hasBeenTrained = useDataStore((state) => state.hasBeenTrained);
+
     return (
         <>
-            {!classChosen &&
+            {(!classChosen || !hasBeenTrained(classChosen)) &&
                 <TutorialPage />
             }
-            {classChosen &&
+            {(classChosen && hasBeenTrained(classChosen)) &&
                 <TrainingPageNonEmpty />
             }
         </>

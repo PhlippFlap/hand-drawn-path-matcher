@@ -5,7 +5,7 @@ export const useUiStore = create((set) => ({
     chosenSeqClassName: null,
     popup: null,
     editingPageMode: 'menu', // either 'menu', 'browse', 'edit', 'add'
-    trainingPageMode: 'menu', // either 'menu', 'fineTune' [or 'browseFalsePositives']
+    trainingPageMode: 'menu', // either 'menu', 'fineTune' or 'browseFalsePositives'
     
     setMode: (newMode) => (set(() => (
         { mode: newMode }

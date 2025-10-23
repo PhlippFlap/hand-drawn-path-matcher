@@ -3,6 +3,7 @@ import { useDataStore } from "../stores/dataStore";
 import { useUiStore } from '../stores/uiStore';
 import { useShallow } from 'zustand/react/shallow'
 import RoundButton from '../components/buttons/RoundButton';
+import Spread from '../components/Spread';
 
 function TrainingMenu() {
     // I'm not sure if useShallow works in this scenario
@@ -20,7 +21,12 @@ function TrainingMenu() {
                 backgroundColor={chosenSeqClsName === "Negatives" ? 'var(--trainmode-primary)' : 'var(--trainmode-primary-dark)'}
                 onClick={() => onSelect('Negatives')}
             >
-                Negatives
+                <Spread>
+                    <span>Negatives</span>
+                    <span>
+                        {'[' + seqClasses.find((item) => item.name === 'Negatives').sequences.length + ']'}
+                    </span>
+                </Spread>
             </RoundButton>
             <div className='trainingMenuSeparator' />
             <ul>
@@ -30,14 +36,10 @@ function TrainingMenu() {
                             backgroundColor={item.name === chosenSeqClsName ? 'var(--trainmode-primary)' : 'var(--trainmode-primary-dark)'}
                             onClick={() => onSelect(item.name)}
                         >
-                            <div className='trainingMenuButtonContent'>
-                                <span className='trainingMenuSeqClassName'>
-                                    {item.name}
-                                </span>
-                                <span className='trainingMenuSymbolName'>
-                                    {" | " + item.symbolName}
-                                </span>
-                            </div>
+                            <Spread>
+                                <span>{item.name}</span>
+                                <span>{'[' + item.sequences.length + ']'}</span>
+                            </Spread>
                         </RoundButton>
                     </li>
                 ))}

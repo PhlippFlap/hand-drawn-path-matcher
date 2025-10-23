@@ -33,6 +33,19 @@ export const useDataStore = create((set, get) => ({
         }
         return seqClass.sequences[index];
     },
+    getFalsePositiveSequence: (clsName, index) => {
+        const seqClass = get().sequenceClasses.find((item) => item.name === clsName);
+        if (seqClass == undefined) {
+            return undefined;
+        } 
+        if (seqClass.falsePositiveSequences == undefined) {
+            return undefined;
+        }
+        if (index < 0 || index >= seqClass.falsePositiveSequences.length) {
+            return undefined;
+        }
+        return seqClass.falsePositiveSequences[index];
+    },
     // replace everything with newState (except actions)
     load: (newState) => {
         set(() => (
@@ -94,5 +107,15 @@ export const useDataStore = create((set, get) => ({
             { ...item, sequences: item.sequences.slice(0, -1)}
             : item
         )}
-    )))
+    ))),
+    hasBeenTrained: (clsName) => {
+        const seqClass = get().sequenceClasses.find((item) => item.name === clsName);
+        if (seqClass == undefined) {
+            return undefined;
+        } 
+        if (seqClass.weakLearner == undefined || seqClass.weakLearner.length === 0) {
+            return false;
+        }
+        return true;
+    }
 }))

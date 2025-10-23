@@ -3,7 +3,7 @@ import { Stage, Layer, Line } from 'react-konva';
 import PixelConverter from './PixelConverter';
 
 function DrawingCanvas({ 
-    path, handlePath
+    path, handlePath, onStartDrawing=() => {}
     //  A path is a sequence of point coordinates like x1, y1, x2, y2, ...
 }) {
     const [dimensions, setDimensions] = useState({
@@ -30,6 +30,7 @@ function DrawingCanvas({
         const pos = e.target.getStage().getPointerPosition();
         // convert pixel coordinates to normalized coordinates between -1 and 1
         setLocalPath([normX(pos.x), normY(pos.y)]);
+        onStartDrawing();
     };
 
     const handleMouseMove = (e) => {

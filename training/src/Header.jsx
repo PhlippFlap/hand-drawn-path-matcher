@@ -10,11 +10,11 @@ function Header() {
     const setMode = useUiStore((state) => state.setMode);
     const data = useDataStore((state) => state);
 
-    const handleToggle = () => {
-        if (mode === 'edit') {
-            setMode('train');
-        } else {
+    const handleToggle = (side) => {
+        if (side === 'left') {
             setMode('edit');
+        } else {
+            setMode('train');
         }
     }
 
