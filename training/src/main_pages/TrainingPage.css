@@ -1,0 +1,23 @@
+.trainingPageMenu {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    width: 15%;
+    height: fit-content;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.trainingPageTutorial {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    width: auto;
+    height: fit-content;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}

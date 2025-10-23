@@ -7,6 +7,8 @@ import EditingPage from './main_pages/EditingPage';
 import { useDataStore } from './stores/dataStore';
 import { usePyodideStore } from './stores/pyodideStore';
 import LoadingScreen from './components/LoadingScreen';
+import TrainingMenu from './menu/TrainingMenu';
+import TrainingPage from './main_pages/TrainingPage';
 
 function LeftMenu({ children }) {
     return (
@@ -34,7 +36,7 @@ function App() {
 
     // Initialize Pyodide on app start
     // Comment out to disable Pyodide so that we do not request it so often (also takes long)
-    initializePyodide();
+    // initializePyodide();
 
     const onProjectInput = (project) => {
         loadData(project);
@@ -62,6 +64,16 @@ function App() {
                             </LeftMenu>
                             <MainWindow>
                                 <EditingPage />
+                            </MainWindow>
+                        </>
+                    }
+                    {mode === 'train' &&
+                        <>
+                            <LeftMenu>
+                                <TrainingMenu />
+                            </LeftMenu>
+                            <MainWindow>
+                                <TrainingPage />
                             </MainWindow>
                         </>
                     }

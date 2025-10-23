@@ -33,7 +33,7 @@ function EditingMenu() {
                 backgroundColor={chosenSeqClsName === "Negatives" ? 'var(--editmode-primary)' : 'var(--editmode-primary-dark)'}
                 onClick={() => onSelect('Negatives')}
             >
-                Negatives
+                {'Negatives  [' + seqClasses.find((item) => item.name === 'Negatives').sequences.length + ']'}
             </RoundButton>
             <div className='separator' />
             <ul>

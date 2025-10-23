@@ -36,6 +36,9 @@ export const usePyodideStore = create((set, get) => ({
         exec()
     },
     executeTrainingScript: () => {
+        if (instance == null) {
+            return; // instance (deliberately) not loaded
+        }
         if (get().status !== 'ready') {
             throw new Error('Pyodide instance not ready');
         }
