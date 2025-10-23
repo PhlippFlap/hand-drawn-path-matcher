@@ -10,13 +10,22 @@ import { useDataStore } from '../stores/dataStore'
 import ViewingCanvas from '../components/ViewingCanvas';
 import CanvasMenu from '../menu/CanvasMenu';
 import { usePyodideStore } from '../stores/pyodideStore';
-import Spread from '../components/Spread';
 
 function TrainAllButton() {
     const executeTrainingScript = usePyodideStore((state) => state.executeTrainingScript);
+    const getOutputJSON = usePyodideStore((state) => state.getOutputJSON)
+
+    const onTrain = () => {
+        const onFinish = () => {
+            alert('Training Finished')
+            alert(JSON.stringify(getOutputJSON(), null, 2))
+        }
+        executeTrainingScript(onFinish)
+    }
+
     return (
         <RoundButton
-            onClick={() => executeTrainingScript()}
+            onClick={() => onTrain()}
             backgroundColor={'var(--trainmode-primary-dark)'}
         >
             Train All

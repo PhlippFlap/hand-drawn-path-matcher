@@ -36,7 +36,7 @@ function App() {
 
     // Initialize Pyodide on app start
     // Comment out to disable Pyodide so that we do not request it so often (also takes long)
-    // initializePyodide();
+    initializePyodide();
 
     const onProjectInput = (project) => {
         loadData(project);
