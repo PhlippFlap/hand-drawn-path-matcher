@@ -32,7 +32,7 @@ function Header() {
             {mode !== 'init' &&
                 <>
                     <div className="switchBtnContainer">
-                        <SwitchButton onToggle={handleToggle}/>
+                        <SwitchButton onToggle={handleToggle} initialState={mode === 'edit' ? 'left' : 'right'}/>
                     </div>
                     <div className="downloadBtnContainer">
                         

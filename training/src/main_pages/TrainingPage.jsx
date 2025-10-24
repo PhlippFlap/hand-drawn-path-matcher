@@ -13,12 +13,22 @@ import { usePyodideStore } from '../stores/pyodideStore';
 
 function TrainAllButton() {
     const executeTrainingScript = usePyodideStore((state) => state.executeTrainingScript);
-    const getOutputJSON = usePyodideStore((state) => state.getOutputJSON)
+    const getOutput = usePyodideStore((state) => state.getOutput);
+    const setTrainedData = useDataStore((state) => state.setTrainedData);
+    const setMetaData = useDataStore((state) => state.setMetaData);
 
     const onTrain = () => {
         const onFinish = () => {
-            alert('Training Finished');
-            alert(JSON.stringify(getOutputJSON(), null, 2));
+            console.log("Training finished. Output JSON:")
+            console.log(JSON.stringify(getOutput(), null, 2));
+            const output = getOutput();
+            setMetaData(output.targetPointCount, output.maxWeakLearnerCount);
+            for (const cls of output.sequenceClasses) {
+                if (cls.weakLearners != undefined) {
+                    console.log("class " + cls.name + " training result: " + cls.weakLearners.length + " weak learners, " + cls.falsePositives.length + " false posisitives.")
+                    setTrainedData(cls.name, cls.weakLearners, cls.falsePositives);
+                }
+            }
         }
         executeTrainingScript(onFinish);
     }

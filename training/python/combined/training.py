@@ -269,6 +269,8 @@ def load_from_json(json_input_str) -> list[SequenceClass]:
 
 def store_to_json(sequence_classes: list[SequenceClass]) -> str:
     json_object: dict = {}
+    json_object["targetPointCount"] = NUM_POINTS
+    json_object["maxWeakLearnerCount"] = MAX_WEAK_LEARNER_COUNT
     classes_list: list = []
     for seq_class in sequence_classes:
         seq_class_dict: dict = {}
@@ -285,7 +287,7 @@ def store_to_json(sequence_classes: list[SequenceClass]) -> str:
                 weak_learner_dict["centerOfMassY"] = round(weak_learner.center_of_mass[1], 6)
                 weak_learner_dict["radius"] = round(weak_learner.radius, 6)
                 weak_learner_list.append(weak_learner_dict)
-            seq_class_dict["weakLearner"] = weak_learner_list
+            seq_class_dict["weakLearners"] = weak_learner_list
             # store false positives
             false_positives_list: list = []
             for false_positive_seq in seq_class.false_positives:

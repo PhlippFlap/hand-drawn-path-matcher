@@ -101,7 +101,7 @@ export const usePyodideStore = create((set, get) => ({
         };
         exec(); // async call
     },
-    getOutputJSON: () => {
+    getOutput: () => {
         return get().output;
     },
 }))

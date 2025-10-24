@@ -2,9 +2,9 @@ import "./SwitchButton.css"
 import { useState } from "react";
 
 function SwitchButton({ 
-    onToggle, 
+    onToggle, initialState='left'
 }) {
-    const [state, setState] = useState('left'); 
+    const [state, setState] = useState(initialState); 
     const handleToggle = () => {
         if (state === 'left') {
             setState('right');

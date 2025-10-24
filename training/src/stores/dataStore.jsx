@@ -6,9 +6,13 @@ export const useDataStore = create((set, get) => ({
         {
             name: "Negatives",
             symbolName: "",
-            sequences: []
+            sequences: [],
+            falsePositives: [],
+            weakLearners: []
         }
     ],
+    maxWeakLearnerCount: undefined,
+    targetPointCount: undefined,
     getSymbolName: (clsName) => {
         const seqClass = get().sequenceClasses.find((item) => item.name === clsName);
         if (seqClass == undefined) {
@@ -38,18 +42,46 @@ export const useDataStore = create((set, get) => ({
         if (seqClass == undefined) {
             return undefined;
         } 
-        if (seqClass.falsePositiveSequences == undefined) {
+        if (seqClass.falsePositives == undefined) {
             return undefined;
         }
-        if (index < 0 || index >= seqClass.falsePositiveSequences.length) {
+        if (index < 0 || index >= seqClass.falsePositives.length) {
             return undefined;
         }
-        return seqClass.falsePositiveSequences[index];
+        return seqClass.falsePositives[index];
+    },
+    getEvalRelevantState: () => {
+        return (
+            {
+                sequenceClasses: get().sequenceClasses
+                    .filter(c => c.weakLearners != undefined && c.weakLearners.length > 0)
+                    .map(item => ({
+                        name: item.name,
+                        weakLearners: item.weakLearners
+                    })),
+                ...(get().targetPointCount && 
+                    {targetPointCount: get().targetPointCount}
+                )
+            }
+        );
     },
     // replace everything with newState (except actions)
     load: (newState) => {
+        // Do not load weak learners and false positives
         set(() => (
-            { sequenceClasses: newState.sequenceClasses }
+            { 
+                sequenceClasses: newState.sequenceClasses.map(c => ({
+                    name: c.name,
+                    symbolName: c.symbolName,
+                    sequences: c.sequences
+                })),
+                ...(newState.targetPointCount && 
+                    {targetPointCount: newState.targetPointCount}
+                ),
+                ...(newState.maxWeakLearnerCount && 
+                    {maxWeakLearnerCount: newState.maxWeakLearnerCount}
+                )
+            }
         ));
     },
     addSequenceClass: (clsName, symbolName, sequences) => {
@@ -113,9 +145,22 @@ export const useDataStore = create((set, get) => ({
         if (seqClass == undefined) {
             return undefined;
         } 
-        if (seqClass.weakLearner == undefined || seqClass.weakLearner.length === 0) {
+        if (seqClass.weakLearners == undefined || seqClass.weakLearners.length === 0) {
             return false;
         }
         return true;
-    }
+    },
+    setTrainedData: (clsName, weakLearners, falsePositives) => (set((state) => (
+        { 
+            sequenceClasses: state.sequenceClasses.map((item) => item.name === clsName ?
+            { ...item, weakLearners: weakLearners, falsePositives: falsePositives }
+            : item
+        )}
+    ))),
+    setMetaData: (targetPointCount, maxWeakLearnerCount) => (set(() => (
+        { 
+            targetPointCount: targetPointCount,
+            maxWeakLearnerCount: maxWeakLearnerCount,
+        }
+    )))
 }))
