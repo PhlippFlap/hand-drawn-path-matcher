@@ -5,7 +5,7 @@ import evaluationScriptFile from '../scripts/evaluation.txt';
 
 export const usePyodideStore = create((set, get) => ({
     instance: null,
-    status: 'idle', // idle, loading, ready, or running
+    status: 'idle', // idle, loading, ready, training, evaluating
     output: null,
     trainingScript: "",
     evaluationScript: "",
@@ -53,7 +53,7 @@ export const usePyodideStore = create((set, get) => ({
             throw new Error('Pyodide instance not ready');
         }
         set(() => (
-            { status: 'running' }
+            { status: 'training' }
         ))
         const exec = async () => {
             const pyodide = get().instance;
@@ -81,7 +81,7 @@ export const usePyodideStore = create((set, get) => ({
             throw new Error('Pyodide instance not ready');
         }
         set(() => (
-            { status: 'running' }
+            { status: 'evaluating' }
         ))
         const exec = async () => {
             const pyodide = get().instance;

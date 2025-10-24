@@ -50,7 +50,7 @@ function EditingMenu() {
                             onEdit={() => onEdit(item.name)}
                             onClick={() => onSelect(item.name)}
                         >
-                            <Spread rightPadding='0.3rem'>
+                            <Spread rightPadding='0.5rem'>
                                 <span>
                                     <span>{item.name}</span>
                                     <span style={{ color: 'var(--gray-light)' }}>

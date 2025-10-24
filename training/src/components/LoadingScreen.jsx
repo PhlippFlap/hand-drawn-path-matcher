@@ -1,10 +1,17 @@
 import "./LoadingScreen.css"
 
-function LoadingScreen() {
+function LoadingScreen({ hidden=false }) {
     return (
-        <div className='loadingScreen'>
-            Working ...
-        </div>
+        <>
+            {!hidden &&
+                <div className='loadingScreen'>
+                    Working ...
+                </div>
+            }
+            {hidden && 
+                <div className='loadingScreenHidden' />
+            }
+        </>
     )
 }
 

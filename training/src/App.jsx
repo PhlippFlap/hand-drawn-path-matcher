@@ -45,8 +45,11 @@ function App() {
 
     return (
         <>
-            {(pyodideStatus === 'loading' || pyodideStatus === 'running') &&
+            {(pyodideStatus === 'loading' || pyodideStatus === 'training') &&
                 <LoadingScreen />
+            }
+            {pyodideStatus === 'evaluating' &&
+                <LoadingScreen hidden={true}/>
             }
             <>
                 {popup &&

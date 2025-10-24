@@ -13,3 +13,12 @@
     font-size: large;
     color: var(--gray-light)
 }
+
+.loadingScreenHidden {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
