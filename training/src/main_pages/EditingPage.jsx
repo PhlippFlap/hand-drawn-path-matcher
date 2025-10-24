@@ -94,7 +94,7 @@ function BrowsePage({ editMode = false }) {
 
     useEffect(() => {
         updatePath();
-    }, [updatePath]);
+    }, [updatePath, seqIndex]);
 
     const seqAvailable = (seqClsName, index) => {
         return getSequence(seqClsName, index) !== undefined;
@@ -105,7 +105,6 @@ function BrowsePage({ editMode = false }) {
         if (seqIndex >= getSequenceCount(chosenSeqClsName)) {
             setSeqIndex(getSequenceCount(chosenSeqClsName) - 1);
         }
-        updatePath();
     }
 
     return (
