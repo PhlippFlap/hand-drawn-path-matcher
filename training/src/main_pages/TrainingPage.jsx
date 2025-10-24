@@ -91,6 +91,7 @@ function BrowseFalsePositivesPage() {
 function FineTunePage() {
     const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
     const executeEvaluationScript = usePyodideStore((state) => state.executeEvaluationScript);
+    const addSequence = useDataStore((state) => state.addSequence);
     const [path, setPath] = useState([]);
     const [evaluation, setEvaluation] = useState("");
 
@@ -109,6 +110,20 @@ function FineTunePage() {
         setEvaluation("");
     }
 
+    const onAddAsPositive = () => {
+        if (path.length >= 4) { // at least 2 points
+            console.log("Added path as positive example (to class " + chosenSeqClsName + ")");
+            addSequence(chosenSeqClsName, path);
+        }
+    }
+
+    const onAddAsNegative = () => {
+        if (path.length >= 4) { // at least 2 points
+            console.log("Added path as negative example (to class Negatives)");
+            addSequence("Negatives", path);
+        }
+    }
+
     return (
         <div className='finetune'>
             <div className='finetuneCanvasContainer'>
@@ -125,13 +140,13 @@ function FineTunePage() {
                     Discard
                 </RoundButton>
                 <RoundButton
-                    onClick={() => alert('Add as negative')}
+                    onClick={() => onAddAsNegative()}
                     backgroundColor={'var(--trainmode-primary-dark)'}
                 >
                     Add as Negative
                 </RoundButton>
                 <RoundButton
-                    onClick={() => alert('Add as positive')}
+                    onClick={() => onAddAsPositive()}
                     backgroundColor={'var(--trainmode-primary-dark)'}
                 >
                     Add as Positive
