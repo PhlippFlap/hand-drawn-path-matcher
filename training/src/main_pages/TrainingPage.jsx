@@ -90,12 +90,18 @@ function BrowseFalsePositivesPage() {
 
 function FineTunePage() {
     const chosenSeqClsName = useUiStore((state) => state.chosenSeqClassName);
+    const executeEvaluationScript = usePyodideStore((state) => state.executeEvaluationScript);
     const [path, setPath] = useState([]);
     const [evaluation, setEvaluation] = useState("");
 
     const handlePathAdding = (path) => {
+        const onFinish = (result) => {
+            const evalResult = result.evaluationResult;
+            console.log("Evaluation finished. Result: " + evalResult);
+            setEvaluation(evalResult);
+        }
+        executeEvaluationScript(path, onFinish);
         setPath(path);
-        // todo evaluate sequence
     }
 
     const onDiscard = () => {
@@ -110,7 +116,7 @@ function FineTunePage() {
             </div>
             <div className='finetuneMenu'>
                 <p>
-                    {'Evaluated class: ' + evaluation}
+                    {'Path classified as: ' + evaluation}
                 </p>
                 <RoundButton
                     onClick={() => onDiscard()}
@@ -189,15 +195,15 @@ function TrainingPageNonEmpty() {
 }
 
 function TrainingPage() {
-    const classChosen = useUiStore((state) => state.chosenSeqClassName != null);
+    const chosenClassName = useUiStore((state) => state.chosenSeqClassName);
     const hasBeenTrained = useDataStore((state) => state.hasBeenTrained);
 
     return (
         <>
-            {(!classChosen || !hasBeenTrained(classChosen)) &&
+            {(chosenClassName == undefined || !hasBeenTrained(chosenClassName)) &&
                 <TutorialPage />
             }
-            {(classChosen && hasBeenTrained(classChosen)) &&
+            {(chosenClassName != undefined && hasBeenTrained(chosenClassName)) &&
                 <TrainingPageNonEmpty />
             }
         </>

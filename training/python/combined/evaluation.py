@@ -166,14 +166,18 @@ def load_from_json(json_input_str) -> SequenceData:
         NUM_POINTS = json_object["targetPointCount"]
     # Read test sequence
     sequences_floats: list[float] = json_object["testSequence"]
-    test_sequence = SequenceData(Sequence.from_float_list(sequences_floats), NUM_POINTS)
+    test_seq = Sequence.from_float_list(sequences_floats)
+    if test_seq.length() < 0.001:
+        # sequence is too short/only a point
+        return None, None
+    test_sequence = SequenceData(test_seq, NUM_POINTS)
     # Read classes (to construct strong learners)
     classes_list: list = json_object["sequenceClasses"]
     classes: dict[str, StrongLearner] = {}
     for seq_class_dict in classes_list:
         name = seq_class_dict["name"]
         strong_learner = StrongLearner()
-        weak_learner_list = seq_class_dict["weakLearner"]
+        weak_learner_list = seq_class_dict["weakLearners"]
         for weak_learner_dict in weak_learner_list:
             decimation_level= weak_learner_dict["decimationLevel"]
             start_index= weak_learner_dict["startIndex"]
@@ -202,11 +206,12 @@ learnerDict, testSequence = load_from_json(json_input_str) # type: ignore
 
 # Evaluate
 evaluation_result = ""
-for class_name in learnerDict.keys():
-    strong_learner = learnerDict[class_name]
-    if strong_learner.evaluate(testSequence):
-        evaluation_result = class_name
-        break
+if learnerDict != None: # avoid case when sequence could not be loaded
+    for class_name in learnerDict.keys():
+        strong_learner = learnerDict[class_name]
+        if strong_learner.evaluate(testSequence):
+            evaluation_result = class_name
+            break
 
 # Write output: Prepare 'json_output_str' (JSON string) for Pyodide to read
 json_output_str = store_to_json(evaluation_result)

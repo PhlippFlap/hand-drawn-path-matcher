@@ -40,7 +40,7 @@ export const usePyodideStore = create((set, get) => ({
             const micropip = instance.pyimport("micropip");
             await micropip.install("numpy");
             set(() => (
-                { instance: instance, status: 'ready', trainingScript: trainingScript }
+                { instance: instance, status: 'ready', trainingScript: trainingScript, evaluationScript: evaluationScript }
             ))
         }
         exec()
@@ -84,20 +84,21 @@ export const usePyodideStore = create((set, get) => ({
             { status: 'running' }
         ))
         const exec = async () => {
-            // todo 
-            // const pyodide = get().instance;
-            // const filteredData = useDataStore.getEvalRelevantState();
-            // const jsonInputString = JSON.stringify(filteredData, null, 2);
-            // pyodide.globals.set("json_input_str", jsonInputString);
-            // await pyodide.runPythonAsync(get().evaluationScript);
-            // const resultString = pyodide.globals.get("json_output_str");
-            // if (resultString == undefined) {
-            //     console.error("Value of 'json_output_str' is undefined after running script with pyodide!")
-            // }
-            // set(() => (
-            //     { status: 'ready' }
-            // ))
-            // onFinish(resultString);
+            const pyodide = get().instance;
+            const filteredData = useDataStore.getState().getEvalRelevantState();
+            filteredData['testSequence'] = testSequence;
+            const jsonInputString = JSON.stringify(filteredData, null, 2);
+            pyodide.globals.set("json_input_str", jsonInputString);
+            await pyodide.runPythonAsync(get().evaluationScript);
+            const resultString = pyodide.globals.get("json_output_str");
+            if (resultString == undefined) {
+                console.error("Value of 'json_output_str' is undefined after running script with pyodide!")
+            }
+            const result = JSON.parse(resultString);
+            set(() => (
+                { status: 'ready' }
+            ))
+            onFinish(result);
         };
         exec(); // async call
     },

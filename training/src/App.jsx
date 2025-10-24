@@ -48,37 +48,35 @@ function App() {
             {(pyodideStatus === 'loading' || pyodideStatus === 'running') &&
                 <LoadingScreen />
             }
-            {(pyodideStatus !== 'loading' && pyodideStatus !== 'running') &&
-                <>
-                    {popup &&
-                        popup
-                    }
-                    <Header />
-                    {mode === 'init' &&
-                        <InitialPage onProjectInput={onProjectInput} />
-                    }
-                    {mode === 'edit' &&
-                        <>
-                            <LeftMenu>
-                                <EditingMenu />
-                            </LeftMenu>
-                            <MainWindow>
-                                <EditingPage />
-                            </MainWindow>
-                        </>
-                    }
-                    {mode === 'train' &&
-                        <>
-                            <LeftMenu>
-                                <TrainingMenu />
-                            </LeftMenu>
-                            <MainWindow>
-                                <TrainingPage />
-                            </MainWindow>
-                        </>
-                    }
-                </>
-            }
+            <>
+                {popup &&
+                    popup
+                }
+                <Header />
+                {mode === 'init' &&
+                    <InitialPage onProjectInput={onProjectInput} />
+                }
+                {mode === 'edit' &&
+                    <>
+                        <LeftMenu>
+                            <EditingMenu />
+                        </LeftMenu>
+                        <MainWindow>
+                            <EditingPage />
+                        </MainWindow>
+                    </>
+                }
+                {mode === 'train' &&
+                    <>
+                        <LeftMenu>
+                            <TrainingMenu />
+                        </LeftMenu>
+                        <MainWindow>
+                            <TrainingPage />
+                        </MainWindow>
+                    </>
+                }
+            </>
         </>
     );
 }
