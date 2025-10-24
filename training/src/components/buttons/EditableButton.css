@@ -1,7 +1,7 @@
 .editableButton {
     display: flex;
     flex-direction: row;
-    column-gap: 1.5px;
+    column-gap: 2px;
     width: 100%;
     height: 2rem;
     align-content: center;

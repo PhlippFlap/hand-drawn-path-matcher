@@ -94,12 +94,15 @@ function FineTunePage() {
     const addSequence = useDataStore((state) => state.addSequence);
     const [path, setPath] = useState([]);
     const [evaluation, setEvaluation] = useState("");
+    const [evaluated, setEvaluated] = useState(false);
+    const highlightColor = evaluation === '' ? 'gray' : (evaluation === chosenSeqClsName ? 'green' : 'red')
 
     const handlePathAdding = (path) => {
         const onFinish = (result) => {
             const evalResult = result.evaluationResult;
             console.log("Evaluation finished. Result: " + evalResult);
             setEvaluation(evalResult);
+            setEvaluated(true);
         }
         executeEvaluationScript(path, onFinish);
         setPath(path);
@@ -108,6 +111,12 @@ function FineTunePage() {
     const onDiscard = () => {
         setPath([]);
         setEvaluation("");
+        setEvaluated(false);
+    }
+
+    const onStartDrawing = () => {
+        setEvaluation("");
+        setEvaluated(false);
     }
 
     const onAddAsPositive = () => {
@@ -126,12 +135,24 @@ function FineTunePage() {
 
     return (
         <div className='finetune'>
-            <div className='finetuneCanvasContainer'>
-                <DrawingCanvas path={path} handlePath={handlePathAdding} onStartDrawing={() => setEvaluation("")} />
+            <div style={evaluated ? {filter: 'drop-shadow(0 0 7px ' + highlightColor + ')'} : {}} className='finetuneCanvasContainer'>
+                <DrawingCanvas path={path} handlePath={handlePathAdding} onStartDrawing={() => onStartDrawing()} />
             </div>
             <div className='finetuneMenu'>
                 <p>
-                    {'Path classified as: ' + evaluation}
+                    <span style={{color: 'gray'}}>
+                        {"Path classified as: "}
+                    </span>
+                    {(evaluated && evaluation === '') &&
+                        <span style={{color: 'gray'}}>
+                            -
+                        </span>
+                    }
+                    {(evaluated && evaluation !== '') &&
+                        <span>
+                            {evaluation}
+                        </span>
+                    }
                 </p>
                 <RoundButton
                     onClick={() => onDiscard()}
@@ -159,17 +180,18 @@ function FineTunePage() {
 }
 
 function Menu({ setMode }) {
-    const negativesChosen = useUiStore((state) => state.chosenSeqClassName === 'Negatives')
+    const chosenClassName = useUiStore((state) => state.chosenSeqClassName);
+    const getFalsePositiveCount = useDataStore((state) => state.getFalsePositiveCount);
 
     return (
         <div className='trainingPageMenu'>
-            {!negativesChosen &&
+            {chosenClassName !== 'Negatives' &&
                 <>
                     <RoundButton
                         onClick={() => setMode('browseFalsePositives')}
                         backgroundColor={'var(--trainmode-primary-dark)'}
                     >
-                        Browse false positives
+                        Browse false positives {'[' + getFalsePositiveCount(chosenClassName) + ']'}
                     </RoundButton>
                     <RoundButton
                         onClick={() => setMode('fineTune')}

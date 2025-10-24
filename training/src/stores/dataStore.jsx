@@ -50,6 +50,13 @@ export const useDataStore = create((set, get) => ({
         }
         return seqClass.falsePositives[index];
     },
+    getFalsePositiveCount: (clsName) => {
+        const seqClass = get().sequenceClasses.find((item) => item.name === clsName);
+        if (seqClass == undefined) {
+            return undefined;
+        } 
+        return seqClass.falsePositives ? seqClass.falsePositives.length : 0;
+    },
     getEvalRelevantState: () => {
         return (
             {
@@ -85,6 +92,9 @@ export const useDataStore = create((set, get) => ({
         ));
     },
     addSequenceClass: (clsName, symbolName, sequences) => {
+        if (clsName === '' || symbolName === '') {
+            return { success: false, err: 'name/symbol name can not be empty!'};
+        }
         // name already taken?
         if (get().sequenceClasses.find((item) => item.name === clsName) !== undefined) {
             return { success: false, err: 'path name already taken' };
@@ -102,11 +112,13 @@ export const useDataStore = create((set, get) => ({
         { sequenceClasses: [...state.sequenceClasses.filter((item) => item.name !== clsName)]}
     ))),
     updateSequenceClass: (oldName, newName, newSymbolName) => {
+        if (newName === '' || newSymbolName === '') {
+            return { success: false, err: 'name/symbol name can not be empty!'};
+        }
         if (oldName !== newName) {
             // name already taken?
             if (get().sequenceClasses.find((item) => item.name === newName) !== undefined) {
-                alert('fail');
-                return { success: false, err: 'path name already taken'};
+                return { success: false, err: 'path name already taken!'};
             }
         }
         set((state) => (
