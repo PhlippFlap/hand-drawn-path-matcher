@@ -238,7 +238,10 @@ def train_all(negatives_seq_class, other_seq_classes: list[SequenceClass]):
         negative_classes = [negatives_seq_class] + other_seq_classes[:i] + other_seq_classes[i+1:]
         negative_sequences = sum(list(map(lambda c: c.prepared_sequences, negative_classes)), [])
         seq_class = other_seq_classes[i]
-        print(f"Training class with name {seq_class.className} ...")
+        if (len(seq_class.prepared_sequences) < 2): # require at least 2 positives
+            print(f"Could not train class '{seq_class.className}' since there are not enough sequences!")
+            continue
+        print(f"Training class with name '{seq_class.className}' ...")
         strong_learner = StrongLearner()
         strong_learner.train(seq_class.prepared_sequences, negative_sequences)
         strong_learner.print_info()
@@ -303,8 +306,10 @@ classes = load_from_json(json_input_str) # type: ignore
 
 # Train
 assert classes[0].className == "Negatives"
-if len(classes) > 1:
+if len(classes) > 1 and len(classes[0].prepared_sequences) > 1: # require 1 positive class and at least 1 negative
     train_all(classes[0], classes[1:])
-
+else:
+    print(f"Could not train since there are not enough positive or negative sequences!")
+          
 # Write output: Prepare 'json_output_str' (JSON string) for Pyodide to read
 json_output_str = store_to_json(classes)
