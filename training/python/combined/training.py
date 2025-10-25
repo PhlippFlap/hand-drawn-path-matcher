@@ -182,7 +182,6 @@ class StrongLearner:
 
     # possible improvement: rate weak learners better that use low decimation lvl in addition to performance    
     def train(self, positives: list[SequenceData], negatives: list[SequenceData]):
-        point_count = max(positives[0].decimations.keys()) # all sequences have the same number of points
         left_negatives = negatives[:]
         for i in range(MAX_WEAK_LEARNER_COUNT):
             # find best weak learner until no more negatives can be rules out but at most 10.
@@ -190,7 +189,7 @@ class StrongLearner:
             best_weak_learner = None
             most_negatives_ruled_out = 0
 
-            weak_learners = self._generate_weak_learners(point_count)
+            weak_learners = self._generate_weak_learners(NUM_POINTS)
             for w in weak_learners:
                 w.train(positives)
                 ruled_out = 0
@@ -304,7 +303,8 @@ classes = load_from_json(json_input_str) # type: ignore
 
 # Train
 assert classes[0].className == "Negatives"
-train_all(classes[0], classes[1:])
+if len(classes) > 1:
+    train_all(classes[0], classes[1:])
 
 # Write output: Prepare 'json_output_str' (JSON string) for Pyodide to read
 json_output_str = store_to_json(classes)
