@@ -69,10 +69,10 @@ function AddPage() {
             leftButton={null}
             rightButton={null}
             middleButtons={[
-                <RoundButton onClick={handleRemoveLatest} backgroundColor={'var(--red)'}>
+                <RoundButton onClick={handleRemoveLatest} backgroundColor={'var(--red-dark)'}>
                     Remove
                 </RoundButton>,
-                <RoundButton onClick={() => setPath([])} backgroundColor={'var(--primary)'}>
+                <RoundButton onClick={() => setPath([])} backgroundColor={'var(--gray-dark)'}>
                     Keep
                 </RoundButton>
             ]}
@@ -122,15 +122,15 @@ function BrowsePage({ editMode = false }) {
             middleButtons={
                 (editMode && seqAvailable(chosenSeqClsName, seqIndex)) ? 
                 [
-                    <RoundButton onClick={onDelete} backgroundColor={'var(--red)'}>
+                    <RoundButton onClick={onDelete} backgroundColor={'var(--red-dark)'}>
                         Remove
                     </RoundButton>,
-                    <RoundButton
-                        onClick={() => (seqIndex + 1 < getSequenceCount(chosenSeqClsName) ? setSeqIndex(seqIndex + 1) : {})}
-                        backgroundColor={'var(--primary)'}
-                    >
-                        Keep
-                    </RoundButton>
+                    //<RoundButton
+                    //    onClick={() => (seqIndex + 1 < getSequenceCount(chosenSeqClsName) ? setSeqIndex(seqIndex + 1) : {})}
+                    //    backgroundColor={'var(--gray-dark)'}
+                    //>
+                    //    Keep
+                    //</RoundButton>
                 ] : []
             }
         />

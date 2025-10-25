@@ -9,6 +9,7 @@
 }
 
 .mainWindow {
+    background-color: var(--gray-darkest);
     display: block;
     position: absolute;
     left: var(--left-menu-width);

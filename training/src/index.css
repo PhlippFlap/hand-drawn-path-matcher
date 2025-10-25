@@ -11,17 +11,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --primary: rgb(45, 83, 178);
-  --primary-light: rgb(69, 107, 203);
-  --editmode-primary: green;
-  --editmode-primary-dark: darkgreen;
-  --trainmode-primary: purple;
-  --trainmode-primary-dark: rgb(86, 0, 86);
+  --primary: rgb(39, 70, 150);
+  --primary-light: rgb(69, 95, 160);
+  --primary-lighter: rgb(87, 118, 195);
+  --editmode-primary: rgb(38, 127, 26);
+  --editmode-primary-dark: rgb(18, 84, 13);
+  --trainmode-primary: rgb(132, 27, 112);
+  --trainmode-primary-dark: rgb(89, 15, 75);
+  --gray-lightest: rgb(209, 209, 209);
   --gray-light: rgb(159, 159, 159);
   --gray: gray;
   --gray-dark: rgb(72, 72, 72);
   --gray-darker: rgb(44, 44, 44);
-  --red: rgb(122, 15, 15);
+  --gray-darkest: rgb(30, 30, 30);
+  --black: rgb(13, 13, 13);
+  --red: rgb(108, 12, 12);
+  --red-dark: rgb(90, 10, 10);
 
   --header-height: 3.5rem;
   --left-menu-width: 14rem;
