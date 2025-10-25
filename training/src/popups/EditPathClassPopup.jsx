@@ -22,6 +22,7 @@ function EditPathClassPopup({
 
     const handleDelete = () => {
         removeSequenceClass(chosenSeqClsName);
+        setChosenSeqClsName(null);
         setPopup(null);
     }
 
