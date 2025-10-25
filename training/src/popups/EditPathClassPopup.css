@@ -2,16 +2,16 @@
     position: fixed;
     display: flex;
     flex-direction: column;
-    row-gap: 3rem;
+    row-gap: 1.5rem;
     align-items: center;
     justify-content: start;
-    padding: 2rem;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding: 1.5rem;
+    padding-left: 7%;
+    padding-right: 7%;
     box-sizing: border-box;
     border-radius: 2rem;
     background-color: var(--gray-dark);
-    width: 60%;
+    width: 65%;
     height: fit-content;
     left: 50%;
     top: 50%;
@@ -19,16 +19,18 @@
 
     .fieldContainer {
         display: flex;
+        width: 100%;
         flex-direction: row;
-        column-gap: 4rem;
+        column-gap: 7%;
         font-size: small;
         align-items: center;
+        justify-content: start;
         
         .field {
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            flex-basis: 12rem;
+            flex-basis: 10rem;
             align-items: start;
 
             input[type=text], select {
@@ -37,6 +39,7 @@
                 border: 1px solid #ccc;
                 border-radius: 4px;
                 padding: 10px;
+                box-sizing: border-box;
             }
         }
 

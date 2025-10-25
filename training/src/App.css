@@ -4,15 +4,15 @@
     position: absolute;
     left: 0;
     top: var(--header-height);
-    width: 15%;
+    width: var(--left-menu-width);
     height: calc(100vh - var(--header-height));
 }
 
 .mainWindow {
     display: block;
     position: absolute;
-    left: 15%;
+    left: var(--left-menu-width);
     top: var(--header-height);
-    width: 85%;
+    width: calc(100vw - var(--left-menu-width));
     height: calc(100vh - var(--header-height));
 }

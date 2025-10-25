@@ -46,7 +46,7 @@ function TrainAllButton() {
 function TutorialPage() {
     return (
         <div className='trainingPageTutorial'>
-            <div style={{ width: '10rem' }}>
+            <div style={{ width: 'var(--main-page-menu-width)' }}>
                 <TrainAllButton />
             </div>
         </div>
@@ -135,16 +135,16 @@ function FineTunePage() {
 
     return (
         <div className='finetune'>
-            <div style={evaluated ? {filter: 'drop-shadow(0 0 7px ' + highlightColor + ')'} : {}} className='finetuneCanvasContainer'>
+            <div style={evaluated ? { filter: 'drop-shadow(0 0 7px ' + highlightColor + ')' } : {}} className='finetuneCanvasContainer'>
                 <DrawingCanvas path={path} handlePath={handlePathAdding} onStartDrawing={() => onStartDrawing()} />
             </div>
             <div className='finetuneMenu'>
                 <p>
-                    <span style={{color: 'gray'}}>
+                    <span style={{ color: 'gray' }}>
                         {"Path classified as: "}
                     </span>
                     {(evaluated && evaluation === '') &&
-                        <span style={{color: 'gray'}}>
+                        <span style={{ color: 'gray' }}>
                             -
                         </span>
                     }

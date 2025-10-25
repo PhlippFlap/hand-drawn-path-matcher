@@ -24,6 +24,8 @@
   --red: rgb(122, 15, 15);
 
   --header-height: 3.5rem;
+  --left-menu-width: 14rem;
+  --main-page-menu-width: 13rem;
 }
 
 body {

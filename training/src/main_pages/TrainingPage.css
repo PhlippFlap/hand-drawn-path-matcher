@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
-    width: 13rem;
+    width: var(--main-page-menu-width);
     height: fit-content;
     position: absolute;
     left: 50%;
@@ -14,7 +14,7 @@
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
-    width: auto;
+    width: fit-content;
     height: fit-content;
     position: absolute;
     left: 50%;
@@ -26,8 +26,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    column-gap: 5rem;
+    justify-content: space-evenly;
     height: 100%;
     width: 100%;
 
@@ -40,7 +39,7 @@
     }
 
     .finetuneMenu {
-        width: 20%;
+        width: 14rem;
         display: flex;
         flex-direction: column;
         align-items: left;
