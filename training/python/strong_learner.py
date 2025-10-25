@@ -1,36 +1,8 @@
-import numpy as np
-from sequence import Sequence
 from sequence_data import SequenceData
 from sequence_class import SequenceClass
 from feature import Feature
 from global_vars import MAX_WEAK_LEARNER_COUNT
-
-class WeakLearner: 
-    def __init__(self, feature):
-        self.feature: Feature = feature
-        self.center_of_mass = np.zeros(2)
-        self.radius = 0
-
-    def train(self, positive_sequences: list[SequenceData]):
-        # compute vectors of positive sequences defined by feature
-        train_vecs = list(map(lambda s: s.get_vector(self.feature), positive_sequences))
-
-        # compute center of mass
-        for v in train_vecs:
-            self.center_of_mass += v
-        self.center_of_mass /= len(train_vecs)
-
-        # potentially use better estimate for this.
-        # compute radius as max distances from center of mass to train vecs.
-        for v in train_vecs:
-            distance = np.linalg.norm(v - self.center_of_mass)
-            if distance > self.radius:
-                self.radius = distance
-
-    def evaluate(self, sequence: SequenceData) -> bool:
-        vec = sequence.get_vector(self.feature)
-        vec -= self.center_of_mass
-        return np.dot(vec, vec) <= self.radius * self.radius
+from weak_learner import WeakLearner
 
 # This is inspired by the Viola-Jones face detection algorithm.
 # It uses cascading weak learners to form a strong learner.
