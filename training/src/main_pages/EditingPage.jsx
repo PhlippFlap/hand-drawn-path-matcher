@@ -88,12 +88,16 @@ function BrowsePage({ editMode = false }) {
     const removeSequence = useDataStore((state) => state.removeSequence);
     const [path, setPath] = useState(getSequence(chosenSeqClsName, seqIndex));
 
-    const updatePath = useCallback(() => {
-        setPath(getSequence(chosenSeqClsName, seqIndex));
-    }, [chosenSeqClsName, seqIndex, getSequence]);
+    const updatePath = useCallback((seqClassName, seqIndex) => {
+        if (seqAvailable(seqClassName, seqIndex)) {
+            setPath(getSequence(seqClassName, seqIndex));
+        } else {
+            setPath([]);
+        }
+    }, [getSequence]);
 
     useEffect(() => {
-        updatePath();
+        updatePath(chosenSeqClsName, seqIndex);
     }, [updatePath, seqIndex]);
 
     const seqAvailable = (seqClsName, index) => {
@@ -104,6 +108,9 @@ function BrowsePage({ editMode = false }) {
         removeSequence(chosenSeqClsName, seqIndex);
         if (seqIndex >= getSequenceCount(chosenSeqClsName)) {
             setSeqIndex(getSequenceCount(chosenSeqClsName) - 1);
+            updatePath(chosenSeqClsName, seqIndex - 1);
+        } else {
+            updatePath(chosenSeqClsName, seqIndex);
         }
     }
 

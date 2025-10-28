@@ -15,8 +15,8 @@ function CanvasMenu({
                 <div className='canvasNaviButtonContainer'>
                     {leftButton}
                 </div>
-                {middleButtons?.map((item) => (
-                    <div className='canvasButtonContainer'>
+                {middleButtons?.map((item, i) => (
+                    <div className='canvasButtonContainer' key={i}>
                         {item}
                     </div>
                 ))}
