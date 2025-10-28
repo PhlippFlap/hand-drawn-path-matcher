@@ -123,6 +123,7 @@ function FineTunePage() {
         if (path.length >= 4) { // at least 2 points
             console.log("Added path as positive example (to class " + chosenSeqClsName + ")");
             addSequence(chosenSeqClsName, path);
+            onDiscard(); // clear canvas
         }
     }
 
@@ -130,6 +131,7 @@ function FineTunePage() {
         if (path.length >= 4) { // at least 2 points
             console.log("Added path as negative example (to class Negatives)");
             addSequence("Negatives", path);
+            onDiscard(); // clear canvas
         }
     }
 
