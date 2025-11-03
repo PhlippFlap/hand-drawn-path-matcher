@@ -199,7 +199,7 @@ function Menu({ setMode }) {
                         onClick={() => setMode('fineTune')}
                         backgroundColor={'var(--trainmode-primary-dark)'}
                     >
-                        Finetune
+                        Fine-tune
                     </RoundButton>
                 </>
             }
