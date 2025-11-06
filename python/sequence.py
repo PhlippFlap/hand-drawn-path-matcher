@@ -143,18 +143,20 @@ class Sequence:
     def decimation_step(self):
         if len(self.points) < 3:
             return
-        min_dist = 100000
+        max_dot = -2
         best_i = 1
         for i in range(1, len(self.points) - 1):
             prev = self.points[i-1]
             cur = self.points[i]
             nex = self.points[i+1]
             to_next = nex - cur
-            ## to_next /= np.linalg.norm(to_next) # this normalization is not necessary since all segments have equal length
+            to_next /= np.linalg.norm(to_next)
             to_cur = cur - prev
-            distance = abs(to_next[0] * to_cur[1] - to_next[1] * to_cur[0])
-            if distance < min_dist:
-                min_dist = distance
+            to_cur /= np.linalg.norm(to_cur)
+            # dot product is similar to angle
+            dot = np.dot(to_cur, to_next)
+            if dot > max_dot:
+                dot = max_dot
                 best_i = i
         self.points.pop(best_i)
 
