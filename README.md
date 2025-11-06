@@ -7,6 +7,8 @@ I am planning to write standalone software that can detect hand-drawn paths give
 
 This project is written with [React](https://react.dev/) using [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) for state management and uses [Pyodide](https://github.com/pyodide/pyodide) to execute python code for training and evaluation in the browser.
 
+![Example](Example.gif)
+
 ## What is a hand-drawn path
 
 We define a hand-drawn path as a path (defined by a sequence of 2d coordinates) that you can draw by hand in one step (without lifting the pen).
