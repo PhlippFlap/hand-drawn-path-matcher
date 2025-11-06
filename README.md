@@ -7,7 +7,7 @@ I am planning to write standalone software that can detect hand-drawn paths give
 
 This project is written with [React](https://react.dev/) using [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) for state management and uses [Pyodide](https://github.com/pyodide/pyodide) to execute python code for training and evaluation in the browser.
 
-!(example gif)[https://github.com/PhlippFlap/hand-drawn-path-matcher-training/blob/main/example.gif]
+![Example](https://github.com/PhlippFlap/hand-drawn-path-matcher-training/blob/main/example.gif)
 
 ## What is a hand-drawn path
 
