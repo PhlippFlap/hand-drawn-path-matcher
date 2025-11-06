@@ -5,7 +5,7 @@ The algorithm is inspired by the [Viola-Jones Face detection algorithm](https://
 It is possible to download the project file including the learned parameters of the algorithm as JSON file once the training is finished.
 I am planning to write standalone software that can detect hand-drawn paths given those parameters. Currently that is not available. However, you can take a look at the evaluation code used for fine-tuning written in python in [evaluation.py](python/combined/evaluation.py) to understand how the evaluation algorithm works (and to adapt it to your use case).
 
-This project is written with [React](https://react.dev/) and uses [Pyodide](https://github.com/pyodide/pyodide) to execute python code for training and evaluation in the browser.
+This project is written with [React](https://react.dev/) using [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) for state management and uses [Pyodide](https://github.com/pyodide/pyodide) to execute python code for training and evaluation in the browser.
 
 ## What is a hand-drawn path
 
@@ -31,14 +31,15 @@ In general, the algorithm handles paths with straight lines and sharp edges bett
 
 ## How the algorithm works
 
-The training and evaluation algorithms are inspired by the [Viola-Jones Face detection algorithm](https://en.wikipedia.org/wiki/Viola%E2%80%93Jones_object_detection_framework) and the training algorithm uses Cascading Ada Boost.
+The training and evaluation algorithms are inspired by the [Viola-Jones Face detection algorithm](https://en.wikipedia.org/wiki/Viola%E2%80%93Jones_object_detection_framework).
+Similar to the Viola-Jones Face detection algorithm it uses cascading Ada-boost to combine a list multiple weak learners to a strong learner. 
 
 ### Normalization
 
 First, all paths are brought to a 'normalized from' by applying the following steps:
 
 - **Equi-spaceout:** A fixed number of points is distributed on the path such that those points all have equal distance to their neighboring points (measured along the path). Those points are then taken as the new path. This way the algorithm is not sensitive to the number of points in the path and to how fast the path was drawn (faster drawing yields less points when using a mouse).
-The number of points distributed is controlled by the "targetPointCount" and is 20 by default. It is not a problem to change this parameter in an existing project.
+The number of points distributed is controlled by the "targetPointCount" parameter and is 20 by default. It is not a problem to change this parameter in an existing project.
 - **Translation and Scaling:** The center of mass of the new path is then moved to (0,0) by translating the points. Additionally, the points are scaled by the inverse of the length of the path such that the path has length 1. This way algorithm is not sensitive to scaling and translation of the path.
 
 ### Decimation
@@ -46,17 +47,44 @@ The number of points distributed is controlled by the "targetPointCount" and is 
 A single decimation step removes the most "unimportant" point in the path: It removes the point which spans the smallest angle, so the point whose incident path segments have the smallest angle deviation. The decimated version of a path with $x$ points is then the path to which the decimation step was applied to until $x$ points were left.
 For each path, all decimated versions are stored up to the point where the path consists of a single line (2 points).
 
+### Strong Learner
+
+A single strong learner is used to classify a single path class: It iterates over its list of weak learners. As soon as one weak learner rejects, the strong learner reject as well (it is evaluated to not be part of the path class). If all weak learners accept, the strong learner accepts as well.
+
 ### Weak Learner
 
-Weak and strong learners are general concepts from Ada-boost.
-A weak learner decides if a path belongs to a class (gives a YES or NO answer) 
+A weak learner decides if a given path is accepted or not depending on the following parameters:
+- decimation level
+- start index
+- end index
+- 2D position vector (also called center of mass)
+- radius
 
-TODO work in Progress
+The weak learner computes the vector $v$ from the point on the path with index *start index* to the point on the path with index *end index* of the decimated version of the path with *decimation level* many points.
+If the distance of $v$ to the *position* is within *radius*, the weak learner accepts. Otherwise, it rejects.
+It is called weak learner because it is not particularly good at classifying correctly but better than chance.
+
+### Training
+
+A single strong learner used to classify a path class is trained as follows:
+It first generates all possible combinations of decimation level, start index and end index and initializes a weak learner for each of them. 
+The parameters 2D position and radius are learned from the positive training examples: 
+- The 2D position is chosen to be the center of mass of all distance vectors computed from start index, end index and decimation level like $v$ before.
+- The radius is chosen to be minimal such that all positive training examples are accepted. This also means that positive training examples will never get rejected by the classifier.
+
+The best weak learner is then chosen as the weak learner which rejects most negative training examples. This is also the reason why it is important to have many negative training examples.
+The chosen weak learner is than added to the list of weak learners of the strong learner. Also, the negative training examples that were "ruled out" by the chosen weak learner are excluded in the following iterations.
+The whole process is then repeated until no more negative examples are left but at most as often as the value of the parameter "maxWeakLearnerCount" which is 10 by default. 
+It is not a problem to change this parameter in an existing project if needed.
+If, for instance, the paths in the path class are sequences of $n$ connected straight lines, this parameter should be chosen to be at least $n$.
 
 
 ## Project structure
 
-TODO work in Progress
+The python code for training and evaluating is located in [python/](python/). Since Pyodide loads the training and evaluation scripts from single .txt files located in [src/scripts/](src/scripts/), the relevant parts of the python code are combined to training and evaluation scripts located in [python/combined/](python/combined/). The code in the .txt files is then an exact copy of the code in those python files. 
+
+The Zustand stores are located in [src/stores/](/src/stores).
+
 
 ## Contributing
 
